@@ -193,7 +193,9 @@ function App() {
     };
 
     if (loading) {
-      setTimeout(() => { checkPasscode() }, 1);
+      setTimeout(() => {
+        checkPasscode();
+      }, 1);
     }
   }, [loading]);
 
@@ -282,14 +284,16 @@ function App() {
         </div>
       </div>
 
-      {/* <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080]">
-        {predictions.map((prediction) => (
-          <div key={prediction.className} className="rounded-md bg-black m-1">
-            <span>{`class name:\t${prediction.className}`}</span>
-            <span>{`probability:\t${prediction.probability}`}</span>
-          </div>
-        ))}
-      </div> */}
+      {failed ? (
+        <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080] z-[10000]">
+          {predictions.map((prediction) => (
+            <div key={prediction.className} className="rounded-md bg-black m-1">
+              <span>{`class name:\t${prediction.className}`}</span>
+              <span>{`probability:\t${prediction.probability}`}</span>
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       {/* Buttons */}
       <div className="absolute top-0 left-0 w-screen h-screen flex justify-end items-end z-0">
