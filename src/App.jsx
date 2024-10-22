@@ -16,6 +16,7 @@ function App() {
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
   let pos = {
     x: 0,
@@ -31,6 +32,7 @@ function App() {
   let done = false;
   let shakeValue = 0;
   let model;
+  let toErase = false;
 
   const updateRect = () => {
     let rect = divRef.current.getBoundingClientRect();
@@ -112,7 +114,6 @@ function App() {
   };
 
   const drawingSketch = (p5) => {
-    let button;
     p5.setup = () => {
       let boundingRect = divRef.current.getBoundingClientRect();
       p5.createCanvas(boundingRect.width, boundingRect.height);
@@ -135,6 +136,10 @@ function App() {
           p5.background(255);
           shaking = false;
         }
+        if (toErase) {
+          p5.background(255);
+          toErase = false;
+        }
         const speed = 6;
         const max = 3;
         const dx = clamp(p5.rotationY * speed, -max, max);
@@ -155,6 +160,18 @@ function App() {
       }
     };
   };
+
+  const resetApp = () => {
+    setUnlocked(false);
+    setFailed(false);
+    setLoading(false);
+    drawing = false;
+    shaking = false;
+    done = false;
+    shakeValue = 0;
+    model;
+    toErase = true;
+  }
 
   useEffect(() => {
     updateRect();
@@ -178,6 +195,9 @@ function App() {
       if (highestProbabilityPrediction.probability > 0.9) {
         setLoading(false);
         setUnlocked(true);
+      } else {
+        setLoading(false);
+        setFailed(true);
       }
     }
   }, [predictions]);
@@ -190,7 +210,7 @@ function App() {
       <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
 
       {loading ? (
-        <div className="z-[10000] absolute top-0 left-0 backdrop-blur-md w-full h-full">
+        <div className="text-black z-[10000] absolute top-0 left-0 backdrop-blur-md w-full h-full flex justify-center items-center">
           loading...
         </div>
       ) : null}
@@ -200,6 +220,17 @@ function App() {
           className="z-[10000] absolute top-0 left-0 w-full h-full"
           src="/images/IMG_2019.png"
         ></img>
+      ) : null}
+
+      {failed ? (
+        <div className="text-black z-[10000] absolute top-0 left-0 backdrop-blur-md w-full h-full flex justify-center items-center flex-col">
+          failed
+          <button className="text-white" onClick={() => {
+            resetApp()
+          }}>
+            Try again
+          </button>
+        </div>
       ) : null}
 
       <div
@@ -239,14 +270,14 @@ function App() {
         </div>
       </div>
 
-      <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080]">
+      {/* <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080]">
         {predictions.map((prediction) => (
           <div key={prediction.className} className="rounded-md bg-black m-1">
             <span>{`class name:\t${prediction.className}`}</span>
             <span>{`probability:\t${prediction.probability}`}</span>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Buttons */}
       <div className="absolute top-0 left-0 w-screen h-screen flex justify-end items-end z-0">
