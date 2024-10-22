@@ -26,12 +26,13 @@ function App() {
 
   const [predictions, setPredictions] = useState([]);
 
+  const [model, setModel] = useState();
+
   // p5 values
   let drawing = false;
   let shaking = false;
   let done = false;
   let shakeValue = 0;
-  let model;
   let toErase = false;
 
   const updateRect = () => {
@@ -68,7 +69,7 @@ function App() {
       "weights.bin"
     );
 
-    model = await tmImage.loadFromFiles(modelFile, weightsFile, metadataFile);
+    setModel(await tmImage.loadFromFiles(modelFile, weightsFile, metadataFile));
   }
 
   const cursorSketch = (p5) => {
@@ -169,11 +170,11 @@ function App() {
     shaking = false;
     done = false;
     shakeValue = 0;
-    model;
     toErase = true;
-  }
+  };
 
   useEffect(() => {
+    init();
     updateRect();
     setMounted(true);
 
@@ -186,7 +187,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log(predictions);
+    const checkPasscode = async () => {
+      let canvas = document.getElementById("defaultCanvas0");
+      setPredictions(await model.predict(canvas));
+    };
+
+    if (loading) {
+      setTimeout(() => { checkPasscode() }, 1);
+    }
+  }, [loading]);
+
+  useEffect(() => {
     if (predictions.length > 0) {
       let highestProbabilityPrediction = predictions.reduce(
         (highest, prediction) =>
@@ -201,8 +212,6 @@ function App() {
       }
     }
   }, [predictions]);
-
-  init();
 
   return (
     <>
@@ -225,9 +234,12 @@ function App() {
       {failed ? (
         <div className="text-black z-[10000] absolute top-0 left-0 backdrop-blur-md w-full h-full flex justify-center items-center flex-col">
           failed
-          <button className="text-white" onClick={() => {
-            resetApp()
-          }}>
+          <button
+            className="text-white"
+            onClick={() => {
+              resetApp();
+            }}
+          >
             Try again
           </button>
         </div>
@@ -299,11 +311,9 @@ function App() {
             Toggle drawing
           </button>
           <button
-            onClick={async () => {
+            onClick={() => {
               setLoading(true);
               done = true;
-              let canvas = document.getElementById("defaultCanvas0");
-              setPredictions(await model.predict(canvas));
             }}
           >
             Unlock phone
