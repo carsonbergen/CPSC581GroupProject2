@@ -298,6 +298,13 @@ function App() {
       {/* Buttons */}
       <div className="absolute top-0 left-0 w-screen h-screen flex justify-end items-end z-0">
         <div className="flex flex-row p-4 space-x-2">
+        <button
+            onClick={(e) => {
+              resetApp()
+            }}
+          >
+            Reset drawing
+          </button>
           <button
             onClick={() => {
               let boundingRect = divRef.current.getBoundingClientRect();
