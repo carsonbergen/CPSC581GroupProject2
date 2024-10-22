@@ -22,7 +22,7 @@ function App() {
   let drawing = false;
   let shaking = false;
   let done = false;
-  const [value, setValue] = useState(0);
+  let shakeValue = 0;
   let rotationX = 0;
   let rotationY = 0;
 
@@ -84,14 +84,21 @@ function App() {
       p5.background(200);
     };
 
+    p5.deviceShaken = () => {
+      shakeValue = shakeValue + 5;
+      if (shakeValue > 150) {
+        shaking = true;
+        done = false;
+        drawing = false;
+        shakeValue = 0;
+      }
+    }
+
     p5.draw = () => {
       if (!done) {
         if (shaking) {
           p5.background(200);
           shaking = false;
-        }
-        if (!drawing) {
-          p5.background(200);
         }
         const speed = 6;
         const max = 3;
@@ -105,7 +112,6 @@ function App() {
 
         pos = newPos;
 
-        // console.log(p5.pRotationX, p5.pRotationY);
         rotationX = p5.rotationX;
         rotationY = p5.rotationY;
 
@@ -127,9 +133,9 @@ function App() {
     };
   };
 
-  useEffect(() => {
-    console.log(drawing)
-  }, [drawing])
+  // useEffect(() => {
+  //   console.log(drawing)
+  // }, [drawing])
 
   return (
     <>
