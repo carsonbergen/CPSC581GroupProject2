@@ -2,7 +2,7 @@ import * as tmImage from "@teachablemachine/image";
 import p5 from "p5";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { useEffect, useRef, useState } from "react";
-import { twMerge } from 'tailwind-merge';
+import { twMerge } from "tailwind-merge";
 
 function clamp(num, lower, upper) {
   // https://www.omarileon.me/blog/javascript-clamp
@@ -34,6 +34,10 @@ function App() {
         width: rect.width,
         height: rect.height,
       });
+      pos = {
+        x: rect.width/2,
+        y: rect.height/2,
+      };
     }
   };
 
@@ -165,10 +169,12 @@ function App() {
     <>
       <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
-      <div className={twMerge(
-        "absolute left-0 top-0 w-full h-full flex justify-end items-end pb-2 px-2 backdrop-blur-sm z-[9999] transition-all duration-300",
-        `${permissionsRequested ? 'opacity-0' : 'opacity-100'}`
-        )}>
+      <div
+        className={twMerge(
+          "absolute left-0 top-0 w-full h-full flex justify-end items-end pb-2 px-2 backdrop-blur-sm transition-all duration-300",
+          `${permissionsRequested ? "opacity-0 z-[0]" : "opacity-100 z-[9999]"}`
+        )}
+      >
         {!permissionsRequested ? (
           <button
             className="w-full font-black uppercase"
@@ -187,6 +193,8 @@ function App() {
           </button>
         ) : null}
       </div>
+
+      {/* Canvases */}
       <div className="w-screen h-screen flex flex-col justify-center items-center p-4">
         <div className="w-full h-[50%] relative" ref={divRef}>
           <div className="absolute top-0 left-0 z-0 border-white border-4 rounded-md">
@@ -196,8 +204,11 @@ function App() {
             {mounted ? <ReactP5Wrapper sketch={cursorSketch} /> : null}
           </div>
         </div>
+      </div>
 
-        <div className="flex flex-row">
+      {/* Buttons */}
+      <div className="absolute top-0 left-0 w-screen h-screen flex justify-end items-end z-0">
+        <div className="flex flex-row p-4 space-x-2">
           <button
             onClick={() => {
               let boundingRect = divRef.current.getBoundingClientRect();
