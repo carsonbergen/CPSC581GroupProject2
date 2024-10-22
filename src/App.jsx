@@ -3,6 +3,7 @@ import * as tmImage from "@teachablemachine/image";
 import p5 from "p5";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { useEffect, useRef, useState } from "react";
+import * as jpeg from "jpeg-js";
 
 function clamp(num, lower, upper) {
   // https://www.omarileon.me/blog/javascript-clamp
@@ -11,6 +12,7 @@ function clamp(num, lower, upper) {
 
 function App() {
   const divRef = useRef(null);
+  const canvasRef = useRef(null);
 
   const [mounted, setMounted] = useState(false);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
@@ -19,11 +21,19 @@ function App() {
     y: 0,
   };
   const [divRect, setDivRect] = useState({ width: 0, height: 0 });
+  const [imageUrl, setImageUrl] = useState('');
+
   let drawing = false;
   let shaking = false;
   let done = false;
   let shakeValue = 0;
   let toErase = true;
+  let model;
+
+  const loadImageFromLocal = () => {
+    const storedImage = localStorage.getItem("canvasImage");
+    setImageUrl(storedImage);
+  };
 
   const updateRect = () => {
     let rect = divRef.current.getBoundingClientRect();
@@ -69,12 +79,10 @@ function App() {
       "weights.bin"
     );
 
-    let model = await tmImage.loadFromFiles(
-      modelFile,
-      weightsFile,
-      metadataFile
-    );
+    model = await tmImage.loadFromFiles(modelFile, weightsFile, metadataFile);
   }
+
+  init();
 
   const cursorSketch = (p5) => {
     p5.setup = () => {
@@ -85,12 +93,12 @@ function App() {
     p5.draw = () => {
       if (!done) {
         if (shaking) {
-          p5.background('rgba(0, 0, 0, 0.0)');
+          p5.background("rgba(0, 0, 0, 0.0)");
           shaking = false;
         }
 
         if (!drawing) {
-          p5.background('rgba(0, 0, 0, 0.0)');
+          p5.background("rgba(0, 0, 0, 0.0)");
         }
         const speed = 6;
         const max = 3;
@@ -119,6 +127,7 @@ function App() {
   };
 
   const drawingSketch = (p5) => {
+    let button;
     p5.setup = () => {
       let boundingRect = divRef.current.getBoundingClientRect();
       p5.createCanvas(boundingRect.width, boundingRect.height);
@@ -162,10 +171,6 @@ function App() {
     };
   };
 
-  // useEffect(() => {
-  //   console.log(drawing)
-  // }, [drawing])
-
   return (
     <>
       <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
@@ -173,7 +178,7 @@ function App() {
 
       <div className="w-screen h-screen flex flex-col justify-center items-center p-4">
         <div className="w-full h-[50%] relative" ref={divRef}>
-          <div className="absolute top-0 left-0 z-10">
+          <div className="absolute top-0 left-0 z-10" ref={canvasRef}>
             {mounted ? <ReactP5Wrapper sketch={drawingSketch} /> : null}
           </div>
           <div className="absolute top-0 left-0 z-50">
@@ -212,6 +217,19 @@ function App() {
             }}
           >
             Toggle drawing
+          </button>
+          <button
+            // onClick={() => {
+            //   const allPredictions = await model.predict()
+            // }}
+            onClick={async () => {
+              done = true;
+              let canvas = document.getElementById('defaultCanvas0');
+              let res = await model.predict(canvas);
+              console.log(res)
+            }}
+          >
+            Unlock phone
           </button>
         </div>
       </div>
