@@ -205,7 +205,7 @@ function App() {
         (highest, prediction) =>
           highest.probability > prediction.probability ? highest : prediction
       );
-      if (highestProbabilityPrediction.probability > 0.9) {
+      if (highestProbabilityPrediction.probability > 0.8) {
         setLoading(false);
         setUnlocked(true);
       } else {
