@@ -211,7 +211,7 @@ function App() {
               if (drawing) toErase = false;
             }}
           >
-            {drawing ? "Start drawing" : "Stop drawing"}
+            Toggle drawing
           </button>
         </div>
       </div>
