@@ -14,14 +14,14 @@ function App() {
 
   const [mounted, setMounted] = useState(false);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
-  const [pos, setPos] = useState({
+  let pos = {
     x: 0,
     y: 0,
-  });
+  };
   const [divRect, setDivRect] = useState({ width: 0, height: 0 });
-  const [drawing, setDrawing] = useState(false);
-  const [shaking, setShaking] = useState(false);
-  const [done, setDone] = useState(false);
+  let drawing = false;
+  let shaking = false;
+  let done = false;
   const [value, setValue] = useState(0);
   let rotationX = 0;
   let rotationY = 0;
@@ -40,7 +40,7 @@ function App() {
     updateRect();
     setMounted(true);
 
-    setPos({ x: divRect.width / 2, y: divRect.height / 2 });
+    pos = { x: divRect.width / 2, y: divRect.height / 2 };
 
     window.addEventListener("resize", updateRect);
     return () => {
@@ -88,7 +88,7 @@ function App() {
       if (!done) {
         if (shaking) {
           p5.background(200);
-          setShaking(false);
+          shaking = false;
         }
         if (!drawing) {
           p5.background(200);
@@ -102,9 +102,10 @@ function App() {
           x: clamp(pos.x + dx, 0, divRect.width),
           y: clamp(pos.y + dy, 0, divRect.height),
         };
-        setPos(newPos);
 
-        console.log(p5.pRotationX, p5.pRotationY);
+        pos = newPos;
+
+        // console.log(p5.pRotationX, p5.pRotationY);
         rotationX = p5.rotationX;
         rotationY = p5.rotationY;
 
@@ -141,9 +142,10 @@ function App() {
             <button
               onClick={() => {
                 if (typeof DeviceOrientationEvent.requestPermission === "function") {
-                  DeviceOrientationEvent.requestPermission()
+                  DeviceOrientationEvent.requestPermission();
+                  setPermissionsRequested(true);
                 } else {
-                  // handle regular non iOS 13+ devices
+                  setPermissionsRequested(true);
                 }
                 // if (permissionState === "granted") {
                 //   setPermissionsRequested(true);
@@ -156,14 +158,14 @@ function App() {
           <button
             onClick={() => {
               let boundingRect = divRef.current.getBoundingClientRect();
-              setPos({ x: boundingRect.width / 2, y: boundingRect.height / 2 });
+              pos = { x: boundingRect.width / 2, y: boundingRect.height / 2 };
             }}
           >
             Reset to origin
           </button>
           <button
             onClick={() => {
-              setDrawing(!drawing);
+             drawing != drawing;
             }}
           >
             Start drawing
