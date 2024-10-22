@@ -1,9 +1,8 @@
-import * as tf from "@tensorflow/tfjs";
 import * as tmImage from "@teachablemachine/image";
 import p5 from "p5";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { useEffect, useRef, useState } from "react";
-import * as jpeg from "jpeg-js";
+import { twMerge } from 'tailwind-merge';
 
 function clamp(num, lower, upper) {
   // https://www.omarileon.me/blog/javascript-clamp
@@ -12,8 +11,7 @@ function clamp(num, lower, upper) {
 
 function App() {
   const divRef = useRef(null);
-  const canvasRef = useRef(null);
-
+  const URL = "/model/";
   const [mounted, setMounted] = useState(false);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
   let pos = {
@@ -21,19 +19,13 @@ function App() {
     y: 0,
   };
   const [divRect, setDivRect] = useState({ width: 0, height: 0 });
-  const [imageUrl, setImageUrl] = useState('');
 
+  // p5 values
   let drawing = false;
   let shaking = false;
   let done = false;
   let shakeValue = 0;
-  let toErase = true;
   let model;
-
-  const loadImageFromLocal = () => {
-    const storedImage = localStorage.getItem("canvasImage");
-    setImageUrl(storedImage);
-  };
 
   const updateRect = () => {
     let rect = divRef.current.getBoundingClientRect();
@@ -44,20 +36,6 @@ function App() {
       });
     }
   };
-
-  useEffect(() => {
-    updateRect();
-    setMounted(true);
-
-    pos = { x: divRect.width / 2, y: divRect.height / 2 };
-
-    window.addEventListener("resize", updateRect);
-    return () => {
-      window.removeEventListener("resize", updateRect);
-    };
-  }, []);
-
-  const URL = "/model/";
 
   async function init() {
     const modelURL = URL + "model.json";
@@ -81,8 +59,6 @@ function App() {
 
     model = await tmImage.loadFromFiles(modelFile, weightsFile, metadataFile);
   }
-
-  init();
 
   const cursorSketch = (p5) => {
     p5.setup = () => {
@@ -131,7 +107,7 @@ function App() {
     p5.setup = () => {
       let boundingRect = divRef.current.getBoundingClientRect();
       p5.createCanvas(boundingRect.width, boundingRect.height);
-      p5.background(200);
+      p5.background(255);
     };
 
     p5.deviceShaken = () => {
@@ -147,7 +123,7 @@ function App() {
     p5.draw = () => {
       if (!done) {
         if (shaking) {
-          p5.background(200);
+          p5.background(255);
           shaking = false;
         }
         const speed = 6;
@@ -171,37 +147,57 @@ function App() {
     };
   };
 
+  useEffect(() => {
+    updateRect();
+    setMounted(true);
+
+    pos = { x: divRect.width / 2, y: divRect.height / 2 };
+
+    window.addEventListener("resize", updateRect);
+    return () => {
+      window.removeEventListener("resize", updateRect);
+    };
+  }, []);
+
+  init();
+
   return (
     <>
       <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
-
+      <div className={twMerge(
+        "absolute left-0 top-0 w-full h-full flex justify-end items-end pb-2 px-2 backdrop-blur-sm z-[9999] transition-all duration-300",
+        `${permissionsRequested ? 'opacity-0' : 'opacity-100'}`
+        )}>
+        {!permissionsRequested ? (
+          <button
+            className="w-full font-black uppercase"
+            onClick={() => {
+              if (
+                typeof DeviceOrientationEvent.requestPermission === "function"
+              ) {
+                DeviceOrientationEvent.requestPermission();
+                setPermissionsRequested(true);
+              } else {
+                setPermissionsRequested(true);
+              }
+            }}
+          >
+            Allow motion?
+          </button>
+        ) : null}
+      </div>
       <div className="w-screen h-screen flex flex-col justify-center items-center p-4">
         <div className="w-full h-[50%] relative" ref={divRef}>
-          <div className="absolute top-0 left-0 z-10" ref={canvasRef}>
+          <div className="absolute top-0 left-0 z-0 border-white border-4 rounded-md">
             {mounted ? <ReactP5Wrapper sketch={drawingSketch} /> : null}
           </div>
           <div className="absolute top-0 left-0 z-50">
             {mounted ? <ReactP5Wrapper sketch={cursorSketch} /> : null}
           </div>
         </div>
+
         <div className="flex flex-row">
-          {!permissionsRequested ? (
-            <button
-              onClick={() => {
-                if (
-                  typeof DeviceOrientationEvent.requestPermission === "function"
-                ) {
-                  DeviceOrientationEvent.requestPermission();
-                  setPermissionsRequested(true);
-                } else {
-                  setPermissionsRequested(true);
-                }
-              }}
-            >
-              Allow motion?
-            </button>
-          ) : null}
           <button
             onClick={() => {
               let boundingRect = divRef.current.getBoundingClientRect();
@@ -219,14 +215,11 @@ function App() {
             Toggle drawing
           </button>
           <button
-            // onClick={() => {
-            //   const allPredictions = await model.predict()
-            // }}
             onClick={async () => {
               done = true;
-              let canvas = document.getElementById('defaultCanvas0');
+              let canvas = document.getElementById("defaultCanvas0");
               let res = await model.predict(canvas);
-              console.log(res)
+              console.log(res);
             }}
           >
             Unlock phone
