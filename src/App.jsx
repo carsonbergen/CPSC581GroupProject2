@@ -5,9 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 function clamp(num, lower, upper) {
+  // Code from:
   // https://www.omarileon.me/blog/javascript-clamp
   return Math.min(Math.max(num, lower), upper);
 }
+
+
 
 function App() {
   const divRef = useRef(null);
@@ -78,7 +81,7 @@ function App() {
         }
 
         if (!drawing) {
-          p5.background("rgba(0, 0, 0, 0.0)");
+          p5.clear();
         }
         const speed = 6;
         const max = 3;
