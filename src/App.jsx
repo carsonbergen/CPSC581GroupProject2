@@ -110,20 +110,26 @@ function App() {
         rotationY = p5.rotationY;
 
         if (!drawing) {
-          // console.log(pos);
           let chlen = 6;
-          p5.stroke("magenta");
-          p5.strokeWeight(5);
+          p5.fill(0);
+          p5.stroke("black");
+          p5.strokeWeight(2);
           p5.line(pos.x - chlen, pos.y, pos.x + chlen, pos.y);
-          p5.stroke("magenta");
-          p5.strokeWeight(5);
+          p5.stroke("black");
+          p5.strokeWeight(2);
           p5.line(pos.x, pos.y - chlen, pos.x, pos.y + chlen);
         } else {
+          p5.strokeWeight(0);
+          p5.fill('black');
           p5.circle(pos.x, pos.y, 25);
         }
       }
     };
   };
+
+  useEffect(() => {
+    console.log(drawing)
+  }, [drawing])
 
   return (
     <>
@@ -131,9 +137,6 @@ function App() {
       <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
 
       <div className="w-screen h-screen flex flex-col justify-center items-center p-4">
-        <span className="whitespace-pre">
-          {`x: ${rotationX}\ny: ${rotationY}`}
-        </span>
         <div className="w-full h-[50%]" ref={divRef}>
           {mounted ? <ReactP5Wrapper sketch={sketch} /> : null}
         </div>
@@ -147,9 +150,6 @@ function App() {
                 } else {
                   setPermissionsRequested(true);
                 }
-                // if (permissionState === "granted") {
-                //   setPermissionsRequested(true);
-                // }
               }}
             >
               Allow motion?
@@ -165,7 +165,7 @@ function App() {
           </button>
           <button
             onClick={() => {
-             drawing != drawing;
+             drawing = !(drawing);
             }}
           >
             Start drawing
