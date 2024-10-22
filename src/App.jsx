@@ -10,18 +10,20 @@ function clamp(num, lower, upper) {
   return Math.min(Math.max(num, lower), upper);
 }
 
-
-
 function App() {
   const divRef = useRef(null);
   const URL = "/model/";
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
   let pos = {
     x: 0,
     y: 0,
   };
   const [divRect, setDivRect] = useState({ width: 0, height: 0 });
+
+  const [predictions, setPredictions] = useState([]);
 
   // p5 values
   let drawing = false;
@@ -38,8 +40,8 @@ function App() {
         height: rect.height,
       });
       pos = {
-        x: rect.width/2,
-        y: rect.height/2,
+        x: rect.width / 2,
+        y: rect.height / 2,
       };
     }
   };
@@ -166,12 +168,40 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    console.log(predictions);
+    if (predictions.length > 0) {
+      let highestProbabilityPrediction = predictions.reduce(
+        (highest, prediction) =>
+          highest.probability > prediction.probability ? highest : prediction
+      );
+      if (highestProbabilityPrediction.probability > 0.9) {
+        setLoading(false);
+        setUnlocked(true);
+      }
+    }
+  }, [predictions]);
+
   init();
 
   return (
     <>
       <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js"></script>
+
+      {loading ? (
+        <div className="z-[10000] absolute top-0 left-0 backdrop-blur-md w-full h-full">
+          loading...
+        </div>
+      ) : null}
+
+      {unlocked ? (
+        <img
+          className="z-[10000] absolute top-0 left-0 w-full h-full"
+          src="/images/IMG_2019.png"
+        ></img>
+      ) : null}
+
       <div
         className={twMerge(
           "absolute left-0 top-0 w-full h-full flex justify-end items-end pb-2 px-2 backdrop-blur-sm transition-all duration-300",
@@ -209,6 +239,15 @@ function App() {
         </div>
       </div>
 
+      <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080]">
+        {predictions.map((prediction) => (
+          <div key={prediction.className} className="rounded-md bg-black m-1">
+            <span>{`class name:\t${prediction.className}`}</span>
+            <span>{`probability:\t${prediction.probability}`}</span>
+          </div>
+        ))}
+      </div>
+
       {/* Buttons */}
       <div className="absolute top-0 left-0 w-screen h-screen flex justify-end items-end z-0">
         <div className="flex flex-row p-4 space-x-2">
@@ -230,10 +269,10 @@ function App() {
           </button>
           <button
             onClick={async () => {
+              setLoading(true);
               done = true;
               let canvas = document.getElementById("defaultCanvas0");
-              let res = await model.predict(canvas);
-              console.log(res);
+              setPredictions(await model.predict(canvas));
             }}
           >
             Unlock phone
