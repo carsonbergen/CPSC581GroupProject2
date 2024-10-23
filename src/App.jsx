@@ -35,30 +35,29 @@ export default function App() {
     return await tmImage.loadFromFiles(modelFile, weightsFile, metadataFile);
   };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    setLoading(false);
-  }, [mounted]);
-
   const getPredictions = async (model) => {
     let canvas = document.getElementById("defaultCanvas0");
     let predictions = await model.predict(canvas);
-    console.log(predictions);
     return predictions;
   };
 
   const unlockPhone = async () => {
-    console.log("unlocking phone");
-    setLoading(true);
     let model = await loadModel();
     let predictions = await getPredictions(model);
-    setLoading(false);
+    setPredictions(predictions);
   };
 
-  if (!mounted) return null;
+  useEffect(() => {
+    const setup = async () => {
+      setLoading(true);
+      let model = await loadModel();
+      let predictions = await getPredictions(model);
+      setPredictions(predictions);
+      setLoading(false);
+    };
+    setup();
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -66,10 +65,25 @@ export default function App() {
       <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.3/dist/teachablemachine-image.min.js" />
 
       {loading ? (
-        <div className="text-black z-[10000] absolute top-0 left-0 backdrop-blur-md w-full h-full flex justify-center items-center">
-          loading...
-        </div>
+        <>
+          <div className="absolute left-0 top-0 w-screen h-screen backdrop-blur-md z-[10000]">
+            Loading
+          </div>
+        </>
       ) : null}
+
+      <div className="absolute left-0 top-0 flex flex-col bg-black text-white z-[10000]">
+        {predictions
+          ? predictions.map((prediction) => (
+              <>
+                <div key={prediction.className} className="">
+                  {prediction.className}
+                  {prediction.probability}
+                </div>
+              </>
+            ))
+          : null}
+      </div>
 
       <Drawing unlockPhone={unlockPhone} />
     </>
