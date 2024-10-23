@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { clamp } from './utils.js';
 
-export default function Drawing({ predictions }) {
+export default function Drawing({ unlockPhone }) {
   const divRef = useRef(null);
   let drawing = false;
   let shaking = false;
@@ -141,11 +141,6 @@ export default function Drawing({ predictions }) {
     };
   }, []);
 
-  useEffect(() => {
-    console.log(pos);
-    console.log(divRef.current.getBoundingClientRect());
-  })
-
   return (
     <>
       {/* Canvases */}
@@ -188,8 +183,7 @@ export default function Drawing({ predictions }) {
           </button>
           <button
             onClick={() => {
-              setLoading(true);
-              done = true;
+              unlockPhone();
             }}
           >
             Unlock phone
