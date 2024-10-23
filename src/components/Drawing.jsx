@@ -50,10 +50,10 @@ export default function Drawing({ unlockPhone }) {
         if (!drawing) {
           let chlen = 6;
           p5.fill(0);
-          p5.stroke("black");
+          p5.stroke("magenta");
           p5.strokeWeight(2);
           p5.line(pos.x - chlen, pos.y, pos.x + chlen, pos.y);
-          p5.stroke("black");
+          p5.stroke("magenta");
           p5.strokeWeight(2);
           p5.line(pos.x, pos.y - chlen, pos.x, pos.y + chlen);
         }
@@ -102,7 +102,7 @@ export default function Drawing({ unlockPhone }) {
 
         if (drawing) {
           p5.strokeWeight(0);
-          p5.fill("black");
+          p5.fill("red");
           p5.circle(pos.x, pos.y, 25);
         }
       }
