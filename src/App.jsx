@@ -28,6 +28,8 @@ function App() {
 
   const [model, setModel] = useState();
 
+  const [selectedColor, setSelectedColor] = useState("black");
+
   // p5 values
   let drawing = false;
   let shaking = false;
@@ -155,7 +157,7 @@ function App() {
 
         if (drawing) {
           p5.strokeWeight(0);
-          p5.fill("black");
+          p5.fill(selectedColor);
           p5.circle(pos.x, pos.y, 25);
         }
       }
@@ -290,6 +292,36 @@ function App() {
             {mounted ? <ReactP5Wrapper sketch={cursorSketch} /> : null}
           </div>
         </div>
+      </div>
+
+      {/* Color Section */}
+      <div className="absolute top-4 left-1/2 z-50 flex space-x-2 transform -translate-x-1/2"
+      >
+        {/*<label className="mr-2 text-white">Select color:</label>*/}
+        
+        <button
+          onClick={() => setSelectedColor("black")}
+          className={`w-8 h-8 border-2 rounded ${selectedColor === "black" ? "border-white" : "border-transparent"}`}
+          style={{ backgroundColor: "black" }}
+        />
+        
+        <button
+          onClick={() => setSelectedColor("red")}
+          className={`w-8 h-8 border-2 rounded ${selectedColor === "red" ? "border-white" : "border-transparent"}`}
+          style={{ backgroundColor: "red" }}
+        />
+        
+        <button
+          onClick={() => setSelectedColor("blue")}
+          className={`w-8 h-8 border-2 rounded ${selectedColor === "blue" ? "border-white" : "border-transparent"}`}
+          style={{ backgroundColor: "blue" }}
+        />
+        
+        <button
+          onClick={() => setSelectedColor("green")}
+          className={`w-8 h-8 border-2 rounded ${selectedColor === "green" ? "border-white" : "border-transparent"}`}
+          style={{ backgroundColor: "green" }}
+        />
       </div>
 
       {/* Buttons */}
