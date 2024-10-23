@@ -173,6 +173,11 @@ function App() {
     toErase = true;
   };
 
+  const checkPasscode = async () => {
+    let canvas = document.getElementById("defaultCanvas0");
+    setPredictions(await model.predict(canvas));
+  };
+
   useEffect(() => {
     init();
     updateRect();
@@ -187,11 +192,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const checkPasscode = async () => {
-      let canvas = document.getElementById("defaultCanvas0");
-      setPredictions(await model.predict(canvas));
-    };
-
     if (loading) {
       setTimeout(() => {
         checkPasscode();
@@ -274,6 +274,14 @@ function App() {
 
       {/* Canvases */}
       <div className="w-screen h-screen flex flex-col justify-center items-center p-4">
+        <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080] z-[10000]">
+          {predictions.map((prediction) => (
+            <div key={prediction.className} className="rounded-md bg-black m-1">
+              <span>{`class name:\t${prediction.className}`}</span>
+              <span>{`probability:\t${prediction.probability}`}</span>
+            </div>
+          ))}
+        </div>
         <div className="w-full h-[50%] relative" ref={divRef}>
           <div className="absolute top-0 left-0 z-0 border-white border-4 rounded-md">
             {mounted ? <ReactP5Wrapper sketch={drawingSketch} /> : null}
@@ -284,23 +292,12 @@ function App() {
         </div>
       </div>
 
-      {failed ? (
-        <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080] z-[10000]">
-          {predictions.map((prediction) => (
-            <div key={prediction.className} className="rounded-md bg-black m-1">
-              <span>{`class name:\t${prediction.className}`}</span>
-              <span>{`probability:\t${prediction.probability}`}</span>
-            </div>
-          ))}
-        </div>
-      ) : null}
-
       {/* Buttons */}
       <div className="absolute top-0 left-0 w-screen h-screen flex justify-end items-end z-0">
         <div className="flex flex-row p-4 space-x-2">
-        <button
+          <button
             onClick={(e) => {
-              resetApp()
+              resetApp();
             }}
           >
             Reset drawing
