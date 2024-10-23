@@ -10,6 +10,7 @@ export default function App() {
   const [predictions, setPredictions] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [permissionsRequested, setPermissionsRequested] = useState(false);
 
   const loadModel = async () => {
     const URL = "/model/";
@@ -71,6 +72,31 @@ export default function App() {
           </div>
         </>
       ) : null}
+
+      <div
+        className={twMerge(
+          "absolute left-0 top-0 w-full h-full flex justify-end items-end pb-2 px-2 backdrop-blur-sm transition-all duration-300",
+          `${permissionsRequested ? "opacity-0 z-[0]" : "opacity-100 z-[9999]"}`
+        )}
+      >
+        {!permissionsRequested ? (
+          <button
+            className="w-full font-black uppercase"
+            onClick={() => {
+              if (
+                typeof DeviceOrientationEvent.requestPermission === "function"
+              ) {
+                DeviceOrientationEvent.requestPermission();
+                setPermissionsRequested(true);
+              } else {
+                setPermissionsRequested(true);
+              }
+            }}
+          >
+            Allow motion?
+          </button>
+        ) : null}
+      </div>
 
       <div className="absolute left-0 top-0 flex flex-col bg-black text-white z-[10000]">
         {predictions
