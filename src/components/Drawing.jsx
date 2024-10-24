@@ -60,6 +60,15 @@ export default function Drawing({ unlockPhone }) {
         }
       }
     };
+    p5.deviceShaken = () => {
+      shakeValue = shakeValue + 5;
+      if (shakeValue > 150) {
+        shaking = true;
+        done = false;
+        drawing = false;
+        shakeValue = 0;
+      }
+    };
   };
 
   const drawingSketch = (p5) => {
