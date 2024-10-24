@@ -11,6 +11,7 @@ export default function App() {
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
+  const [painting, setPainting] = useState(false);
 
   const loadModel = async () => {
     const URL = "/model/";
@@ -45,6 +46,7 @@ export default function App() {
   const unlockPhone = async () => {
     let model = await loadModel();
     let predictions = await getPredictions(model);
+    console.log(predictions)
     setPredictions(predictions);
   };
 
@@ -96,19 +98,6 @@ export default function App() {
             Allow motion?
           </button>
         ) : null}
-      </div>
-
-      <div className="absolute left-0 top-0 flex flex-col bg-black text-white z-[10000]">
-        {predictions
-          ? predictions.map((prediction) => (
-              <>
-                <div key={prediction.className} className="">
-                  {prediction.className}
-                  {prediction.probability}
-                </div>
-              </>
-            ))
-          : null}
       </div>
 
       <Drawing unlockPhone={unlockPhone} />
