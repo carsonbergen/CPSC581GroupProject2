@@ -109,6 +109,15 @@ export default function Drawing({ unlockPhone }) {
         }
       }
     };
+
+    p5.deviceShaken = () => {
+      value = value + 5;
+      if (value > 150) {
+        shaking = true;
+        drawing = false;
+        value = 0;
+      }
+    };
   };
 
   const resetApp = () => {
