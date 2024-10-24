@@ -75,7 +75,7 @@ export default function Drawing({ unlockPhone }) {
       if (shakeValue > 150) {
         shaking = true;
         done = false;
-        // drawing = false;
+        drawing = false;
         shakeValue = 0;
       }
     };
@@ -107,16 +107,6 @@ export default function Drawing({ unlockPhone }) {
           p5.fill("red");
           p5.circle(pos.x, pos.y, 25);
         }
-      }
-    };
-
-    p5.deviceShaken = () => {
-      value = value + 5;
-      if (value > 150) {
-        shaking = true;
-        drawing = false;
-        done = false;
-        value = 0;
       }
     };
   };
