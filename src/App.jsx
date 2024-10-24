@@ -274,6 +274,7 @@ function App() {
         ) : null}
       </div>
 
+      {/*Main Container*/}
       <div className="w-screen h-screen flex flex-col justify-center items-center p-4">
 
         {/* Canvases */}
@@ -297,8 +298,7 @@ function App() {
         </div>
 
         {/* Color Section */}
-        <div className="flex space-x-2 mb-4 justify-center z-[100]"
-        >
+        <div className="flex space-x-2 mb-4 justify-center z-[100]">
           
           <button
             onClick={() => setSelectedColor("black")}
@@ -359,10 +359,7 @@ function App() {
               Unlock phone
             </button>
           </div>
-
-
       </div>
-
     </>
   );
 }
