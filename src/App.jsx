@@ -274,92 +274,95 @@ function App() {
         ) : null}
       </div>
 
-      {/* Canvases */}
       <div className="w-screen h-screen flex flex-col justify-center items-center p-4">
-        <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080] z-[10000]">
-          {predictions.map((prediction) => (
-            <div key={prediction.className} className="rounded-md bg-black m-1">
-              <span>{`class name:\t${prediction.className}`}</span>
-              <span>{`probability:\t${prediction.probability}`}</span>
+
+        {/* Canvases */}
+        <div className="w-full h-full relative mb-8 mt-4">
+          <div className="absolute top-0 left-0 w-fit h-fit backdrop-blur-md rounded-md text-white border border-black p-4 bg-[#00000080] z-[10000]">
+            {predictions.map((prediction) => (
+              <div key={prediction.className} className="rounded-md bg-black m-1">
+                <span>{`class name:\t${prediction.className}`}</span>
+                <span>{`probability:\t${prediction.probability}`}</span>
+              </div>
+            ))}
+          </div>
+          <div className="w-full h-full relative" ref={divRef}>
+            <div className="absolute top-0 left-0 z-0 border-white border-4 rounded-md">
+              {mounted ? <ReactP5Wrapper sketch={drawingSketch} /> : null}
             </div>
-          ))}
-        </div>
-        <div className="w-full h-[50%] relative" ref={divRef}>
-          <div className="absolute top-0 left-0 z-0 border-white border-4 rounded-md">
-            {mounted ? <ReactP5Wrapper sketch={drawingSketch} /> : null}
-          </div>
-          <div className="absolute top-0 left-0 z-50">
-            {mounted ? <ReactP5Wrapper sketch={cursorSketch} /> : null}
+            <div className="absolute top-0 left-0 z-50">
+              {mounted ? <ReactP5Wrapper sketch={cursorSketch} /> : null}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Color Section */}
-      <div className="absolute top-4 left-1/2 z-50 flex space-x-2 transform -translate-x-1/2"
-      >
-        {/*<label className="mr-2 text-white">Select color:</label>*/}
-        
-        <button
-          onClick={() => setSelectedColor("black")}
-          className={`w-8 h-8 border-2 rounded ${selectedColor === "black" ? "border-white" : "border-transparent"}`}
-          style={{ backgroundColor: "black" }}
-        />
-        
-        <button
-          onClick={() => setSelectedColor("red")}
-          className={`w-8 h-8 border-2 rounded ${selectedColor === "red" ? "border-white" : "border-transparent"}`}
-          style={{ backgroundColor: "red" }}
-        />
-        
-        <button
-          onClick={() => setSelectedColor("blue")}
-          className={`w-8 h-8 border-2 rounded ${selectedColor === "blue" ? "border-white" : "border-transparent"}`}
-          style={{ backgroundColor: "blue" }}
-        />
-        
-        <button
-          onClick={() => setSelectedColor("green")}
-          className={`w-8 h-8 border-2 rounded ${selectedColor === "green" ? "border-white" : "border-transparent"}`}
-          style={{ backgroundColor: "green" }}
-        />
-      </div>
-
-      {/* Buttons */}
-      <div className="absolute top-0 left-0 w-screen h-screen flex justify-end items-end z-0">
-        <div className="flex flex-row p-4 space-x-2">
+        {/* Color Section */}
+        <div className="flex space-x-2 mb-4 justify-center z-[100]"
+        >
+          
           <button
-            onClick={(e) => {
-              resetApp();
-            }}
-          >
-            Reset drawing
-          </button>
+            onClick={() => setSelectedColor("black")}
+            className={`w-8 h-8 border-2 rounded-full p-1 ${selectedColor === "black" ? "border-white" : "border-transparent"}`}
+            style={{ backgroundColor: "black" }}
+          />
+          
           <button
-            onClick={() => {
-              let boundingRect = divRef.current.getBoundingClientRect();
-              pos = { x: boundingRect.width / 2, y: boundingRect.height / 2 };
-            }}
-          >
-            Reset to origin
-          </button>
+            onClick={() => setSelectedColor("red")}
+            className={`w-8 h-8 border-2 rounded-full p-1 ${selectedColor === "red" ? "border-white" : "border-transparent"}`}
+            style={{ backgroundColor: "red" }}
+          />
+          
           <button
-            onClick={(e) => {
-              drawing = !drawing;
-              if (drawing) toErase = false;
-            }}
-          >
-            Toggle drawing
-          </button>
+            onClick={() => setSelectedColor("blue")}
+            className={`w-8 h-8 border-2 rounded-full p-1 ${selectedColor === "blue" ? "border-white" : "border-transparent"}`}
+            style={{ backgroundColor: "blue" }}
+          />
+          
           <button
-            onClick={() => {
-              setLoading(true);
-              done = true;
-            }}
-          >
-            Unlock phone
-          </button>
+            onClick={() => setSelectedColor("green")}
+            className={`w-8 h-8 border-2 rounded-full p-1 ${selectedColor === "green" ? "border-white" : "border-transparent"}`}
+            style={{ backgroundColor: "green" }}
+          />
         </div>
+
+        {/* Buttons */}
+          <div className="flex flex-row p-4 space-x-2 z-[100]">
+            <button
+              onClick={(e) => {
+                resetApp();
+              }}
+            >
+              Reset drawing
+            </button>
+            <button
+              onClick={() => {
+                let boundingRect = divRef.current.getBoundingClientRect();
+                pos = { x: boundingRect.width / 2, y: boundingRect.height / 2 };
+              }}
+            >
+              Reset to origin
+            </button>
+            <button
+              onClick={(e) => {
+                drawing = !drawing;
+                if (drawing) toErase = false;
+              }}
+            >
+              Toggle drawing
+            </button>
+            <button
+              onClick={() => {
+                setLoading(true);
+                done = true;
+              }}
+            >
+              Unlock phone
+            </button>
+          </div>
+
+
       </div>
+
     </>
   );
 }
