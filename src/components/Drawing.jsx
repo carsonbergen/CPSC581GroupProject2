@@ -115,6 +115,7 @@ export default function Drawing({ unlockPhone }) {
       if (value > 150) {
         shaking = true;
         drawing = false;
+        done = false;
         value = 0;
       }
     };
