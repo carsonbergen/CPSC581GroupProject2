@@ -6,6 +6,8 @@ import p5 from "p5";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { twMerge } from "tailwind-merge";
 import Model from "./components/Model";
+import { Password } from "@phosphor-icons/react";
+import HomeScreen from "./components/HomeScreen";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ export default function App() {
   const [defaultPassword, setDefaultPassword] = useState([
     "black",
     "Blank",
-    "green",
+    "black",
     "Blank",
   ]);
   const [currentPassword, setCurrentPassword] = useState([]);
@@ -47,13 +49,15 @@ export default function App() {
   };
 
   const resetApp = () => {
-    console.log("resetting app");
     setSelectedColor("black");
     setCurrentPassword([]);
     setStep(0);
+    setCorrectPassword(false);
+    console.log('reset app');
   };
 
   const unlockPhone = async () => {
+    console.log(defaultPassword, currentPassword, step);
     let canvas = document.getElementById("defaultCanvas0");
     let predictions = await model.getPredictions(canvas);
     let newCurrentPassword = currentPassword;
@@ -61,11 +65,9 @@ export default function App() {
     const highestProbability = predictions.reduce((highest, current) =>
       current.probability > highest.probability ? current : highest
     );
-    console.log(predictions, highestProbability);
     if (currentStep < 2) {
       newCurrentPassword.push(selectedColor, highestProbability.className);
       setCurrentPassword(newCurrentPassword);
-      currentStep = currentStep + 1;
     }
     if (currentStep >= 2) {
       for (let i = 0; i < 4; i++) {
@@ -75,15 +77,12 @@ export default function App() {
         }
       }
     }
+    currentStep = currentStep + 1;
     setStep(currentStep);
-    if (newCurrentPassword.length == 4) {
+    if (newCurrentPassword.length == 4 && currentStep == 3) {
       setCorrectPassword(true);
     }
   };
-
-  useEffect(() => {
-    console.log("correct password", correctPassword);
-  }, [correctPassword]);
 
   useEffect(() => {
     const setup = async () => {
@@ -139,6 +138,7 @@ export default function App() {
         unlockPhone={unlockPhone}
         selectedColor={selectedColor}
         setSelectedColor={setSelectedColor}
+        step={step}
       />
 
       <div
@@ -147,27 +147,12 @@ export default function App() {
           `${correctPassword ? "opacity-100 z-[10000]" : "opacity-0 z-0"}`
         )}
       >
-        {/* Apps */}
-        <div className="grid grid-cols-3">
-          <div className="w-fit h-fit p-4 flex flex-col justify-center items-center">
-            <div className="bg-white rounded-md w-[25vw] h-[25vw] ">
-              
-            </div>
-            <span>Settings</span>
-          </div>
-          <div className="w-fit h-fit p-4 flex flex-col justify-center items-center">
-            <div className="bg-white rounded-md w-[25vw] h-[25vw] ">
-              
-            </div>
-            <span>Settings</span>
-          </div>
-          <div className="w-fit h-fit p-4 flex flex-col justify-center items-center">
-            <div className="bg-white rounded-md w-[25vw] h-[25vw] ">
-              
-            </div>
-            <span>Settings</span>
-          </div>
-        </div>
+        <HomeScreen
+          setPassword={(password) => {
+            setDefaultPassword(password);
+          }}
+          resetApp={resetApp}
+        />
       </div>
     </>
   );
