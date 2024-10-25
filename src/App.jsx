@@ -8,13 +8,19 @@ import { twMerge } from "tailwind-merge";
 import Model from "./components/Model";
 
 export default function App() {
-  const [predictions, setPredictions] = useState([]);
-  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
-  const [painting, setPainting] = useState(false);
   const [model, setModel] = useState(null);
   const [selectedColor, setSelectedColor] = useState("black");
+  const [defaultPassword, setDefaultPassword] = useState([
+    "black",
+    "Blank",
+    "green",
+    "Blank",
+  ]);
+  const [currentPassword, setCurrentPassword] = useState([]);
+  const [step, setStep] = useState(0);
+  const [correctPassword, setCorrectPassword] = useState(false);
 
   const loadModel = async () => {
     const URL = "/model/";
@@ -40,12 +46,44 @@ export default function App() {
     return await tmImage.loadFromFiles(modelFile, weightsFile, metadataFile);
   };
 
+  const resetApp = () => {
+    console.log("resetting app");
+    setSelectedColor("black");
+    setCurrentPassword([]);
+    setStep(0);
+  };
+
   const unlockPhone = async () => {
     let canvas = document.getElementById("defaultCanvas0");
     let predictions = await model.getPredictions(canvas);
-    console.log(predictions);
-    setPredictions(predictions);
+    let newCurrentPassword = currentPassword;
+    let currentStep = step;
+    const highestProbability = predictions.reduce((highest, current) =>
+      current.probability > highest.probability ? current : highest
+    );
+    console.log(predictions, highestProbability);
+    if (currentStep < 2) {
+      newCurrentPassword.push(selectedColor, highestProbability.className);
+      setCurrentPassword(newCurrentPassword);
+      currentStep = currentStep + 1;
+    }
+    if (currentStep >= 2) {
+      for (let i = 0; i < 4; i++) {
+        if (defaultPassword[i] != currentPassword[i]) {
+          resetApp();
+          return;
+        }
+      }
+    }
+    setStep(currentStep);
+    if (newCurrentPassword.length == 4) {
+      setCorrectPassword(true);
+    }
   };
+
+  useEffect(() => {
+    console.log("correct password", correctPassword);
+  }, [correctPassword]);
 
   useEffect(() => {
     const setup = async () => {
@@ -57,7 +95,6 @@ export default function App() {
       setLoading(false);
     };
     setup();
-    setMounted(true);
   }, []);
 
   return (
@@ -103,6 +140,35 @@ export default function App() {
         selectedColor={selectedColor}
         setSelectedColor={setSelectedColor}
       />
+
+      <div
+        className={twMerge(
+          `absolute left-0 top-0 w-screen h-screen bg-black flex justify-center items-center`,
+          `${correctPassword ? "opacity-100 z-[10000]" : "opacity-0 z-0"}`
+        )}
+      >
+        {/* Apps */}
+        <div className="grid grid-cols-3">
+          <div className="w-fit h-fit p-4 flex flex-col justify-center items-center">
+            <div className="bg-white rounded-md w-[25vw] h-[25vw] ">
+              
+            </div>
+            <span>Settings</span>
+          </div>
+          <div className="w-fit h-fit p-4 flex flex-col justify-center items-center">
+            <div className="bg-white rounded-md w-[25vw] h-[25vw] ">
+              
+            </div>
+            <span>Settings</span>
+          </div>
+          <div className="w-fit h-fit p-4 flex flex-col justify-center items-center">
+            <div className="bg-white rounded-md w-[25vw] h-[25vw] ">
+              
+            </div>
+            <span>Settings</span>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

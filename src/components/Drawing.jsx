@@ -130,14 +130,6 @@ export default function Drawing({
     };
   };
 
-  const resetApp = () => {
-    drawing = false;
-    shaking = false;
-    done = false;
-    shakeValue = 0;
-    toErase = true;
-  };
-
   const updateRect = () => {
     let rect = divRef.current.getBoundingClientRect();
     if (rect) {
