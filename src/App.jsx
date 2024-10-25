@@ -53,11 +53,10 @@ export default function App() {
     setCurrentPassword([]);
     setStep(0);
     setCorrectPassword(false);
-    console.log('reset app');
+    console.log("reset app");
   };
 
   const unlockPhone = async () => {
-    console.log(defaultPassword, currentPassword, step);
     let canvas = document.getElementById("defaultCanvas0");
     let predictions = await model.getPredictions(canvas);
     let newCurrentPassword = currentPassword;
@@ -65,7 +64,8 @@ export default function App() {
     const highestProbability = predictions.reduce((highest, current) =>
       current.probability > highest.probability ? current : highest
     );
-    if (currentStep < 2) {
+    if (currentStep < 2 && currentPassword.length < 4) {
+      console.log('adding to password')
       newCurrentPassword.push(selectedColor, highestProbability.className);
       setCurrentPassword(newCurrentPassword);
     }
@@ -79,7 +79,8 @@ export default function App() {
     }
     currentStep = currentStep + 1;
     setStep(currentStep);
-    if (newCurrentPassword.length == 4 && currentStep == 3) {
+    if (newCurrentPassword.length == 4 && currentStep >= 3) {
+      console.log('correct password')
       setCorrectPassword(true);
     }
   };
@@ -140,6 +141,36 @@ export default function App() {
         setSelectedColor={setSelectedColor}
         step={step}
       />
+
+      <div
+        className={twMerge(
+          `absolute left-0 top-0 w-screen h-screen bg-black flex justify-center items-center`,
+          `${
+            !(correctPassword) && step >= 2
+              ? "opacity-100 z-[10000]"
+              : "opacity-0 z-0"
+          }`
+        )}
+      >
+        <div className="flex flex-col w-full h-full">
+          wrong password
+          <div className="flex flex-row">
+            {currentPassword.map((el) => (
+              <span>{el}</span>
+            ))}
+          </div>
+          <div className="flex flex-row">
+            {defaultPassword.map((el) => (
+              <span>{el}</span>
+            ))}
+          </div>
+          <button
+            onClick={() => resetApp()}
+          >
+            Reset
+          </button>
+        </div>
+      </div>
 
       <div
         className={twMerge(
