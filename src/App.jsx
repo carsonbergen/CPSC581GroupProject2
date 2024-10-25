@@ -14,7 +14,8 @@ export default function App() {
   const [permissionsRequested, setPermissionsRequested] = useState(false);
   const [painting, setPainting] = useState(false);
   const [model, setModel] = useState(null);
-  const [selectedColor, setSelectedColor] = useState('black');
+  const [selectedColor, setSelectedColor] = useState("black");
+
 
   const loadModel = async () => {
     const URL = "/model/";
@@ -60,16 +61,6 @@ export default function App() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    const loadPredictions = async () => {
-      let canvas = document.getElementById("defaultCanvas0");
-      await model.getPredictions(canvas);
-    };
-    if (model && !loading) {
-      // loadPredictions();
-    }
-  }, [model]);
-
   return (
     <>
       <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js" />
@@ -108,33 +99,7 @@ export default function App() {
         ) : null}
       </div>
 
-      <div className="flex space-x-2 mb-4 justify-center z-[100]">
-          <button
-            onClick={() => setSelectedColor("black")}
-            className={`w-8 h-8 border-2 rounded-full p-1 ${selectedColor === "black" ? "border-white" : "border-transparent"}`}
-            style={{ backgroundColor: "black" }}
-          />
-          
-          <button
-            onClick={() => setSelectedColor("red")}
-            className={`w-8 h-8 border-2 rounded-full p-1 ${selectedColor === "red" ? "border-white" : "border-transparent"}`}
-            style={{ backgroundColor: "red" }}
-          />
-          
-          <button
-            onClick={() => setSelectedColor("blue")}
-            className={`w-8 h-8 border-2 rounded-full p-1 ${selectedColor === "blue" ? "border-white" : "border-transparent"}`}
-            style={{ backgroundColor: "blue" }}
-          />
-          
-          <button
-            onClick={() => setSelectedColor("green")}
-            className={`w-8 h-8 border-2 rounded-full p-1 ${selectedColor === "green" ? "border-white" : "border-transparent"}`}
-            style={{ backgroundColor: "green" }}
-          />
-        </div>
-
-      <Drawing unlockPhone={unlockPhone} />
+      <Drawing unlockPhone={unlockPhone} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
     </>
   );
 }
