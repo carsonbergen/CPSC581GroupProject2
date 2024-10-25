@@ -50,7 +50,8 @@ export default function App() {
     const setup = async () => {
       setLoading(true);
       let loadedModel = await loadModel();
-      const model = new Model(loadedModel);
+      let canvas = document.getElementById("defaultCanvas0");
+      const model = new Model(loadedModel, canvas);
       setModel(model);
       setLoading(false);
     };
@@ -64,7 +65,7 @@ export default function App() {
       await model.getPredictions(canvas);
     };
     if (model && !loading) {
-      loadPredictions();
+      // loadPredictions();
     }
   }, [model]);
 

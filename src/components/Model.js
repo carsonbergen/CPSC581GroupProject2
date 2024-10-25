@@ -1,8 +1,9 @@
 import * as tmImage from "@teachablemachine/image";
 
 export default class Model {
-  constructor(model) {
+  constructor(model, canvas) {
     this.model = model;
+    this.getPredictions(canvas);
   }
 
   getModel() {
