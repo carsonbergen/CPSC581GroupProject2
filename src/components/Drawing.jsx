@@ -2,7 +2,6 @@ import * as tmImage from "@teachablemachine/image";
 import p5 from "p5";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { twMerge } from "tailwind-merge";
 import { clamp } from "./utils.js";
 import {
   Compass,
@@ -12,8 +11,15 @@ import {
   Palette,
   Trash,
 } from "@phosphor-icons/react";
+import { twMerge } from "tailwind-merge";
 
-export default function Drawing({ unlockPhone }) {
+export default function Drawing({
+  unlockPhone,
+  selectedColor,
+  setSelectedColor,
+}) {
+  const [colourPaletteOpened, setColourPaletteOpened] = useState(false);
+
   const divRef = useRef(null);
   let drawing = false;
   let shaking = false;
@@ -31,6 +37,10 @@ export default function Drawing({ unlockPhone }) {
     p5.setup = () => {
       let boundingRect = divRef.current.getBoundingClientRect();
       p5.createCanvas(boundingRect.width, boundingRect.height);
+      pos = {
+        x: boundingRect.width/2,
+        y: boundingRect.height/2,
+      }
     };
 
     p5.draw = () => {
@@ -60,7 +70,7 @@ export default function Drawing({ unlockPhone }) {
         p5.stroke("black");
         p5.strokeWeight(2);
         p5.line(pos.x - chlen, pos.y, pos.x + chlen, pos.y);
-        p5.stroke("magenta");
+        p5.stroke("black");
         p5.strokeWeight(2);
         p5.line(pos.x, pos.y - chlen, pos.x, pos.y + chlen);
       }
@@ -113,7 +123,7 @@ export default function Drawing({ unlockPhone }) {
 
         if (drawing) {
           p5.strokeWeight(0);
-          p5.fill("red");
+          p5.fill(selectedColor);
           p5.circle(pos.x, pos.y, 25);
         }
       }
@@ -195,9 +205,67 @@ export default function Drawing({ unlockPhone }) {
           >
             <LockOpen className="w-full h-full stroke-2 fill-black" />
           </button>
-          <button className="absolute bottom-32 right-[4.5rem] bg-purple-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto">
+          <button
+            className="absolute bottom-32 right-[4.5rem] bg-purple-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
+            onClick={() => setColourPaletteOpened(!colourPaletteOpened)}
+          >
             <Palette className="w-full h-full stroke-2 fill-black" />
           </button>
+        </div>
+      </div>
+
+      <div
+        className={twMerge(
+          "absolute right-0 top-0 z-[999] w-full h-full p-4 flex flex-col justify-end items-end space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
+          `${
+            colourPaletteOpened ? "translate-y-[0vh]" : "translate-y-[100vh]"
+          }`,
+          ""
+        )}
+      >
+        <div className="flex flex-col justify-center items-center bg-[#00000080] rounded-full backdrop-blur-md p-2">
+            <span className="font-black font-sans text-lg">Pick colour</span>
+            <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit p-4 z-[1000] pointer-events-auto">
+              <button
+                onClick={() => setSelectedColor("black")}
+                className={`w-8 h-8 border-2 rounded-full p-1 ${
+                  selectedColor === "black"
+                    ? "border-white"
+                    : "border-transparent"
+                }`}
+                style={{ backgroundColor: "black" }}
+              />
+
+              <button
+                onClick={() => setSelectedColor("red")}
+                className={`w-8 h-8 border-2 rounded-full p-1 ${
+                  selectedColor === "red"
+                    ? "border-white"
+                    : "border-transparent"
+                }`}
+                style={{ backgroundColor: "red" }}
+              />
+
+              <button
+                onClick={() => setSelectedColor("blue")}
+                className={`w-8 h-8 border-2 rounded-full p-1 ${
+                  selectedColor === "blue"
+                    ? "border-white"
+                    : "border-transparent"
+                }`}
+                style={{ backgroundColor: "blue" }}
+              />
+
+              <button
+                onClick={() => setSelectedColor("green")}
+                className={`w-8 h-8 border-2 rounded-full p-1 ${
+                  selectedColor === "green"
+                    ? "border-white"
+                    : "border-transparent"
+                }`}
+                style={{ backgroundColor: "green" }}
+              />
+            </div>
         </div>
       </div>
     </>

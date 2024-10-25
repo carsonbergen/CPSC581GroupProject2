@@ -14,6 +14,7 @@ export default function App() {
   const [permissionsRequested, setPermissionsRequested] = useState(false);
   const [painting, setPainting] = useState(false);
   const [model, setModel] = useState(null);
+  const [selectedColor, setSelectedColor] = useState("black");
 
   const loadModel = async () => {
     const URL = "/model/";
@@ -59,16 +60,6 @@ export default function App() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    const loadPredictions = async () => {
-      let canvas = document.getElementById("defaultCanvas0");
-      await model.getPredictions(canvas);
-    };
-    if (model && !loading) {
-      // loadPredictions();
-    }
-  }, [model]);
-
   return (
     <>
       <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js" />
@@ -107,7 +98,11 @@ export default function App() {
         ) : null}
       </div>
 
-      <Drawing unlockPhone={unlockPhone} />
+      <Drawing
+        unlockPhone={unlockPhone}
+        selectedColor={selectedColor}
+        setSelectedColor={setSelectedColor}
+      />
     </>
   );
 }
