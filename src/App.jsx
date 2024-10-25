@@ -54,6 +54,7 @@ export default function App() {
     setCurrentPassword([]);
     setStep(0);
     setCorrectPassword(false);
+    setIncorrectPassword(false);
     console.log("reset app");
   };
 
