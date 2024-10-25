@@ -31,6 +31,7 @@ export default function Drawing({ unlockPhone }) {
         if (shaking) {
           p5.background("rgba(0, 0, 0, 0.0)");
           shaking = false;
+          drawing = false;
         }
 
         if (!drawing) {
@@ -94,10 +95,10 @@ export default function Drawing({ unlockPhone }) {
           p5.background(255);
           shaking = false;
         }
-        if (toErase) {
-          p5.background(255);
-          toErase = false;
-        }
+        // if (toErase) {
+        //   p5.background(255);
+        //   toErase = false;
+        // }
         const speed = 6;
         const max = 3;
         const dx = clamp(p5.rotationY * speed, -max, max);
