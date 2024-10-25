@@ -23,6 +23,7 @@ export default function App() {
   const [currentPassword, setCurrentPassword] = useState([]);
   const [step, setStep] = useState(0);
   const [correctPassword, setCorrectPassword] = useState(false);
+  const [incorrectPassword, setIncorrectPassword] = useState(false);
 
   const loadModel = async () => {
     const URL = "/model/";
@@ -72,8 +73,7 @@ export default function App() {
     if (currentStep >= 2) {
       for (let i = 0; i < 4; i++) {
         if (defaultPassword[i] != currentPassword[i]) {
-          console.log(defaultPassword[i], currentPassword[i])
-          resetApp();
+          setIncorrectPassword(true);
           return;
         }
       }
@@ -147,7 +147,7 @@ export default function App() {
         className={twMerge(
           `absolute left-0 top-0 w-screen h-screen bg-black flex justify-center items-center`,
           `${
-            !(correctPassword) && step >= 3
+            incorrectPassword
               ? "opacity-100 z-[10000]"
               : "opacity-0 z-0"
           }`
@@ -155,11 +155,13 @@ export default function App() {
       >
         <div className="flex flex-col w-full h-full">
           wrong password
+          <span>Current password</span>
           <div className="flex flex-row">
             {currentPassword.map((el) => (
               <span>{el}</span>
             ))}
           </div>
+          <span>Correct password</span>
           <div className="flex flex-row">
             {defaultPassword.map((el) => (
               <span>{el}</span>
