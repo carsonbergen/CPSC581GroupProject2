@@ -72,6 +72,7 @@ export default function App() {
     if (currentStep >= 2) {
       for (let i = 0; i < 4; i++) {
         if (defaultPassword[i] != currentPassword[i]) {
+          console.log(defaultPassword[i], currentPassword[i])
           resetApp();
           return;
         }
@@ -146,7 +147,7 @@ export default function App() {
         className={twMerge(
           `absolute left-0 top-0 w-screen h-screen bg-black flex justify-center items-center`,
           `${
-            !(correctPassword) && step >= 2
+            !(correctPassword) && step >= 3
               ? "opacity-100 z-[10000]"
               : "opacity-0 z-0"
           }`
