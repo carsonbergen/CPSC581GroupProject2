@@ -64,7 +64,6 @@ export default function Drawing({ unlockPhone }) {
 
   const drawingSketch = (p5) => {
     p5.setup = () => {
-      console.log('setup')
       let boundingRect = divRef.current.getBoundingClientRect();
       p5.createCanvas(boundingRect.width, boundingRect.height);
       p5.background(255);
@@ -158,7 +157,7 @@ export default function Drawing({ unlockPhone }) {
       </div>
 
       {/* Buttons */}
-      <div className="absolute right-0 top-0 z-[999] w-screen h-screen p-2 flex justify-end items-end pointer-events-none">
+      <div className="absolute right-0 top-0 z-[999] w-full h-full p-2 pb-20 flex justify-end items-end pointer-events-none">
         <div className="relative">
           <button 
             className="absolute bottom-4 right-20 bg-gray-100 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-28 h-28 flex justify-center items-center pointer-events-auto"
