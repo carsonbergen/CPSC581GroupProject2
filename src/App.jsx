@@ -5,6 +5,7 @@ import * as tmImage from "@teachablemachine/image";
 import p5 from "p5";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { twMerge } from "tailwind-merge";
+import Model from "./components/Model";
 
 export default function App() {
   const [predictions, setPredictions] = useState([]);
@@ -12,6 +13,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
   const [painting, setPainting] = useState(false);
+  const [model, setModel] = useState(null);
 
   const loadModel = async () => {
     const URL = "/model/";
@@ -37,30 +39,35 @@ export default function App() {
     return await tmImage.loadFromFiles(modelFile, weightsFile, metadataFile);
   };
 
-  const getPredictions = async (model) => {
-    let canvas = document.getElementById("defaultCanvas0");
-    let predictions = await model.predict(canvas);
-    return predictions;
-  };
-
   const unlockPhone = async () => {
-    let model = await loadModel();
-    let predictions = await getPredictions(model);
-    console.log(predictions)
+    let canvas = document.getElementById("defaultCanvas0");
+    let predictions = await model.getPredictions(canvas);
+    console.log(predictions);
     setPredictions(predictions);
   };
 
   useEffect(() => {
     const setup = async () => {
       setLoading(true);
-      let model = await loadModel();
-      let predictions = await getPredictions(model);
-      setPredictions(predictions);
+      let loadedModel = await loadModel();
+      let canvas = document.getElementById("defaultCanvas0");
+      const model = new Model(loadedModel, canvas);
+      setModel(model);
       setLoading(false);
     };
     setup();
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const loadPredictions = async () => {
+      let canvas = document.getElementById("defaultCanvas0");
+      await model.getPredictions(canvas);
+    };
+    if (model && !loading) {
+      // loadPredictions();
+    }
+  }, [model]);
 
   return (
     <>
