@@ -16,7 +16,6 @@ export default function App() {
   const [model, setModel] = useState(null);
   const [selectedColor, setSelectedColor] = useState("black");
 
-
   const loadModel = async () => {
     const URL = "/model/";
     const modelURL = URL + "model.json";
@@ -99,7 +98,11 @@ export default function App() {
         ) : null}
       </div>
 
-      <Drawing unlockPhone={unlockPhone} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
+      <Drawing
+        unlockPhone={unlockPhone}
+        selectedColor={selectedColor}
+        setSelectedColor={setSelectedColor}
+      />
     </>
   );
 }
