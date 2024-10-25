@@ -41,9 +41,8 @@ export default function Drawing({ unlockPhone }) {
           drawing = false;
         }
 
-        if (!drawing) {
-          p5.clear();
-        }
+        p5.clear();
+
         const speed = 6;
         const max = 3;
         const dx = clamp(p5.rotationY * speed, -max, max);
