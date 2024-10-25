@@ -57,7 +57,7 @@ export default function Drawing({ unlockPhone }) {
 
         let chlen = 6;
         p5.fill(0);
-        p5.stroke("magenta");
+        p5.stroke("black");
         p5.strokeWeight(2);
         p5.line(pos.x - chlen, pos.y, pos.x + chlen, pos.y);
         p5.stroke("magenta");
@@ -170,7 +170,7 @@ export default function Drawing({ unlockPhone }) {
       </div>
 
       {/* Buttons */}
-      <div className="absolute right-0 top-0 z-[999] w-full h-full p-2 pb-20 flex justify-end items-end pointer-events-none">
+      <div className="absolute right-0 top-0 z-[999] w-full h-full p-2 flex justify-end items-end pointer-events-none">
         <div className="relative">
           <button
             className="absolute bottom-4 right-20 bg-gray-100 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-28 h-28 flex justify-center items-center pointer-events-auto"
