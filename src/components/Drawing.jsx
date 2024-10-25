@@ -211,6 +211,12 @@ export default function Drawing({
           >
             <Palette className="w-full h-full stroke-2 fill-black" />
           </button>
+          <button
+            className="absolute bottom-32 right-[4.5rem] bg-purple-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
+            onClick={() => setColourPaletteOpened(!colourPaletteOpened)}
+          >
+            <Palette className="w-full h-full stroke-2 fill-black" />
+          </button>
         </div>
       </div>
 
