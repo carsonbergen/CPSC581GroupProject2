@@ -10,8 +10,10 @@ import {
   PaintBrush,
   Palette,
   Trash,
+  Speedometer,
 } from "@phosphor-icons/react";
 import { twMerge } from "tailwind-merge";
+import speed1 from '../assets/speed1.png';
 
 export default function Drawing({
   unlockPhone,
@@ -19,6 +21,13 @@ export default function Drawing({
   setSelectedColor,
 }) {
   const [colourPaletteOpened, setColourPaletteOpened] = useState(false);
+  const [speedOpened, setSpeedOpened] = useState(false);
+  const speedimg [
+    {},
+    {},
+    {},
+    {}
+  ]
 
   const divRef = useRef(null);
   let drawing = false;
@@ -177,6 +186,7 @@ export default function Drawing({
             <ReactP5Wrapper sketch={cursorSketch} />
           </div>
         </div>
+
       </div>
 
       {/* Buttons */}
@@ -212,10 +222,10 @@ export default function Drawing({
             <Palette className="w-full h-full stroke-2 fill-black" />
           </button>
           <button
-            className="absolute bottom-32 right-[4.5rem] bg-purple-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
-            onClick={() => setColourPaletteOpened(!colourPaletteOpened)}
+            className="absolute bottom-[9.8rem] right-2 bg-orange-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
+            onClick={() => setSpeedOpened(!speedOpened)}
           >
-            <Palette className="w-full h-full stroke-2 fill-black" />
+            <Speedometer className="w-full h-full stroke-2 fill-black" />
           </button>
         </div>
       </div>
@@ -271,6 +281,23 @@ export default function Drawing({
                 }`}
                 style={{ backgroundColor: "green" }}
               />
+            </div>
+        </div>
+      </div>
+
+      <div
+        className={twMerge(
+          "absolute z-[999] w-full h-full p-4 flex flex-col justify-end items-end space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
+          `${
+            speedOpened ? "translate-y-[0vh]" : "translate-y-[100vh]"
+          }`,
+          ""
+        )}
+      >
+        <div className="flex flex-col justify-center items-center bg-[#00000080] rounded-full backdrop-blur-md p-2">
+            <span className="font-black font-sans text-lg">Adjust Speed</span>
+            <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit p-4 z-[1000] pointer-events-auto">
+            <img src={speed1}></img>
             </div>
         </div>
       </div>
