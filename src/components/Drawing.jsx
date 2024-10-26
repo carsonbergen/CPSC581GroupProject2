@@ -14,20 +14,18 @@ import {
 } from "@phosphor-icons/react";
 import { twMerge } from "tailwind-merge";
 import speed1 from '../assets/speed1.png';
+import speed2 from '../assets/speed2.png';
+import speed3 from '../assets/speed3.png';
+import speed4 from '../assets/speed4.png';
+let speedsrc_i = 0;
 
 export default function Drawing({
   unlockPhone,
   selectedColor,
-  setSelectedColor,
+  setSelectedColor
 }) {
   const [colourPaletteOpened, setColourPaletteOpened] = useState(false);
   const [speedOpened, setSpeedOpened] = useState(false);
-  const speedimg [
-    {},
-    {},
-    {},
-    {}
-  ]
 
   const divRef = useRef(null);
   let drawing = false;
@@ -39,6 +37,9 @@ export default function Drawing({
     x: 0,
     y: 0,
   };
+  let speedsrc = [speed1, speed2, speed3, speed4];
+  let speed = Math.pow(2, speedsrc_i);
+  let max = Math.pow(2, speedsrc_i);
 
   const [divRect, setDivRect] = useState({ width: 0, height: 0 });
 
@@ -62,8 +63,8 @@ export default function Drawing({
 
         p5.clear();
 
-        const speed = 6;
-        const max = 3;
+        speed = Math.pow(2, speedsrc_i);
+        max = Math.pow(2, speedsrc_i);
         const dx = clamp(p5.rotationY * speed, -max, max);
         const dy = clamp(p5.rotationX * speed, -max, max);
 
@@ -84,6 +85,7 @@ export default function Drawing({
         p5.line(pos.x, pos.y - chlen, pos.x, pos.y + chlen);
       }
     };
+
     p5.deviceShaken = () => {
       shakeValue = shakeValue + 5;
       if (shakeValue > 150) {
@@ -112,14 +114,25 @@ export default function Drawing({
       }
     };
 
+    p5.deviceTurned = () => {
+      if (speedOpened) {
+        if (p5.turnAxis === 'Z') {
+          //speedsrc_i = (speedsrc_i + 1) % 4;
+          document.getElementById('speedgauge').src = speedsrc[speedsrc_i];
+        }
+      }
+    
+    }
+
     p5.draw = () => {
       if (!done) {
         if (shaking) {
           p5.background(255);
           shaking = false;
         }
-        const speed = 6;
-        const max = 3;
+
+        speed = Math.pow(2, speedsrc_i);
+        max = Math.pow(2, speedsrc_i);
         const dx = clamp(p5.rotationY * speed, -max, max);
         const dy = clamp(p5.rotationX * speed, -max, max);
 
@@ -287,17 +300,22 @@ export default function Drawing({
 
       <div
         className={twMerge(
-          "absolute z-[999] w-full h-full p-4 flex flex-col justify-end items-end space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
+          "absolute z-[999] w-full h-[35%] p-4 flex flex-col justify-center items-center space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
           `${
             speedOpened ? "translate-y-[0vh]" : "translate-y-[100vh]"
           }`,
           ""
         )}
       >
-        <div className="flex flex-col justify-center items-center bg-[#00000080] rounded-full backdrop-blur-md p-2">
+        <div className="flex flex-col justify-center items-center bg-[#00000080] rounded-full backdrop-blur-md p-4">
             <span className="font-black font-sans text-lg">Adjust Speed</span>
             <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit p-4 z-[1000] pointer-events-auto">
-            <img src={speed1}></img>
+              <img onClick={() => { 
+                if (speedOpened) {
+                  speedsrc_i = (speedsrc_i + 1) % 4; 
+                  document.getElementById('speedgauge').src = speedsrc[speedsrc_i];
+                }
+              }} src={speedsrc[speedsrc_i]} className="w-[12rem] h-auto" id="speedgauge"></img>
             </div>
         </div>
       </div>
