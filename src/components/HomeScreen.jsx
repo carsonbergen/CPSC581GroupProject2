@@ -18,7 +18,7 @@ function PhoneScreenIcon({ name, icon, onClick }) {
 
 function ColourSelect({ onChange }) {
   return (
-    <select className="capitalize" onChange={onChange} defaultValue={"black"}>
+    <select className="capitalize rounded-md px-4 min-w-[35vw] w-[35vw]" onChange={onChange} defaultValue={"black"}>
       <option className="capitalize">black</option>
       <option className="capitalize">red</option>
       <option className="capitalize">blue</option>
@@ -29,7 +29,7 @@ function ColourSelect({ onChange }) {
 
 function SymbolSelect({ onChange }) {
   return (
-    <select className="capitalize" onChange={onChange} defaultValue={"Heart"}>
+    <select className="capitalize rounded-md px-4 w-full h-full min-w-[35vw] w-[35vw]" onChange={onChange} defaultValue={"Heart"}>
       <option className="capitalize">Heart</option>
       <option className="capitalize">Star</option>
       <option className="capitalize">Lowercase Lambda</option>
@@ -80,8 +80,8 @@ export default function HomeScreen({ setPassword, resetApp }) {
       >
         <span className="text-lg font-black">Set new password</span>
         <div className="flex flex-col space-y-2 justify-center items-start">
-          <div className="flex flex-row space-x-4">
-            <span>First colour</span>
+          <div className="flex flex-row space-x-4 w-full">
+            <span className="max-w-[15vw] w-full min-w-[15vw]">First colour</span>
             <ColourSelect
               onChange={(e) => {
                 let updatedPassword = newPassword;
@@ -91,7 +91,7 @@ export default function HomeScreen({ setPassword, resetApp }) {
             />
           </div>
           <div className="flex flex-row space-x-4">
-            <span>First symbol</span>
+            <span className="max-w-[15vw] w-full min-w-[15vw]">First symbol</span>
             <SymbolSelect
               onChange={(e) => {
                 let updatedPassword = newPassword;
@@ -101,7 +101,7 @@ export default function HomeScreen({ setPassword, resetApp }) {
             />
           </div>
           <div className="flex flex-row space-x-4">
-            <span>Second colour</span>
+            <span className="max-w-[15vw] w-full min-w-[15vw]">Second colour</span>
             <ColourSelect
               onChange={(e) => {
                 let updatedPassword = newPassword;
@@ -111,7 +111,7 @@ export default function HomeScreen({ setPassword, resetApp }) {
             />
           </div>
           <div className="flex flex-row space-x-4">
-            <span>Second symbol</span>
+            <span className="max-w-[15vw] w-full min-w-[15vw]">Second symbol</span>
             <SymbolSelect
               onChange={(e) => {
                 let updatedPassword = newPassword;
@@ -122,7 +122,7 @@ export default function HomeScreen({ setPassword, resetApp }) {
           </div>
         </div>
         <button
-          className="bg-green-400 text-black font-black text-lg"
+          className="bg-green-400 text-black font-black text-lg p-2 rounded-md border border-[#383838]"
           onClick={() => {
             setPassword(newPassword);
             setSettingPassword(false);
@@ -131,7 +131,7 @@ export default function HomeScreen({ setPassword, resetApp }) {
           Set password?
         </button>
         <button
-          className="bg-red-500 text-white font-black text-lg"
+          className="bg-red-500 text-white font-black text-lg p-2 rounded-md border border-[#383838]"
           onClick={() => {
             setSettingPassword(false);
           }}

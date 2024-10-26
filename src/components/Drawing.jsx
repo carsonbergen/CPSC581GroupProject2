@@ -15,6 +15,27 @@ import {
 } from "@phosphor-icons/react";
 import { twMerge } from "tailwind-merge";
 
+const DrawingButton = ({
+  className,
+  onClick,
+  children,
+}) => {
+  return (
+    <button
+      className={twMerge("shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full flex justify-center items-center pointer-events-auto p-4 stroke-1", className)}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
+
+// onClick={() => {
+//   drawing = !drawing;
+// }}
+{/* <PaintBrush className="w-full h-full stroke-2 fill-black" /> */}
+
+
 export default function Drawing({
   unlockPhone,
   selectedColor,
@@ -177,25 +198,25 @@ export default function Drawing({
       {/* Buttons */}
       <div className="absolute right-0 top-0 z-[999] w-full h-full p-2 flex justify-end items-end pointer-events-none">
         <div className="relative">
-          <button
-            className="absolute bottom-4 right-20 bg-gray-100 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-28 h-28 flex justify-center items-center pointer-events-auto"
+          <DrawingButton
+            className="absolute bottom-4 right-20 bg-gray-100 w-28 h-28"
             onClick={() => {
               drawing = !drawing;
             }}
           >
             <PaintBrush className="w-full h-full stroke-2 fill-black" />
-          </button>
-          <button
-            className="absolute bottom-0 right-4 bg-yellow-400 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
+          </DrawingButton>
+          <DrawingButton
+            className="absolute bottom-0 right-4 bg-yellow-400 w-16 h-16"
             onClick={() => {
               let boundingRect = divRef.current.getBoundingClientRect();
               pos = { x: boundingRect.width / 2, y: boundingRect.height / 2 };
             }}
           >
             <Compass className="w-full h-full stroke-2 fill-black" />
-          </button>
-          <button
-            className="absolute bottom-[4.5rem] right-0 bg-green-400 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-20 h-20 flex justify-center items-center pointer-events-auto"
+          </DrawingButton>
+          <DrawingButton
+            className="absolute bottom-[4.5rem] right-0 bg-green-400 w-20 h-20"
             onClick={unlockPhone}
           >
             {step < 2 ? (
@@ -203,13 +224,13 @@ export default function Drawing({
             ) : (
               <LockOpen className="w-full h-full stroke-2 fill-black" />
             )}
-          </button>
-          <button
-            className="absolute bottom-32 right-[4.5rem] bg-purple-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
+          </DrawingButton>
+          <DrawingButton
+            className="absolute bottom-32 right-[4.5rem] bg-purple-300 w-16 h-16"
             onClick={() => setColourPaletteOpened(!colourPaletteOpened)}
           >
             <Palette className="w-full h-full stroke-2 fill-black" />
-          </button>
+          </DrawingButton>
         </div>
       </div>
 
