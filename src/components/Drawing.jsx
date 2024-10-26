@@ -19,6 +19,7 @@ import speed3 from '../assets/speed3.png';
 import speed4 from '../assets/speed4.png';
 let speedsrc_i = 0;
 
+
 export default function Drawing({
   unlockPhone,
   selectedColor,
@@ -33,6 +34,7 @@ export default function Drawing({
   let done = false;
   let shakeValue = 0;
   let toErase = false;
+  let zorient = p5.rotationZ;
   let pos = {
     x: 0,
     y: 0,
@@ -121,7 +123,6 @@ export default function Drawing({
           document.getElementById('speedgauge').src = speedsrc[speedsrc_i];
         }
       }
-    
     }
 
     p5.draw = () => {
@@ -236,7 +237,10 @@ export default function Drawing({
           </button>
           <button
             className="absolute bottom-[9.8rem] right-2 bg-orange-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
-            onClick={() => setSpeedOpened(!speedOpened)}
+            onClick={() => {
+              setSpeedOpened(!speedOpened);
+              zorient = p5.rotationZ;
+            }}
           >
             <Speedometer className="w-full h-full stroke-2 fill-black" />
           </button>
