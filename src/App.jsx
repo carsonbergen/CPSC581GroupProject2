@@ -96,6 +96,7 @@ export default function App() {
       const model = new Model(loadedModel, canvas);
       setModel(model);
       setLoading(false);
+      console.log('done setup');
     };
     setup();
   }, []);
@@ -156,10 +157,11 @@ export default function App() {
           <span>Password entered:</span>
           <div>
             <div className="flex flex-row w-full justify-center items-center">
-              {currentPassword.map((el) => (
+              {currentPassword.map((el, i) => (
                 <input
                   type={showPassword ? "text" : "password"}
                   disabled
+                  key={el + i}
                   className="
                     w-full mx-2 bg-[#181818] text-white 
                     px-1 py-2 rounded-lg capitalize shadow-[#140a14] 
