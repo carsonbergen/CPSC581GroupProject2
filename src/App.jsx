@@ -6,15 +6,25 @@ import p5 from "p5";
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { twMerge } from "tailwind-merge";
 import Model from "./components/Model";
+import { Eye, EyeSlash, Password } from "@phosphor-icons/react";
+import HomeScreen from "./components/HomeScreen";
 
 export default function App() {
-  const [predictions, setPredictions] = useState([]);
-  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [permissionsRequested, setPermissionsRequested] = useState(false);
-  const [painting, setPainting] = useState(false);
   const [model, setModel] = useState(null);
   const [selectedColor, setSelectedColor] = useState("black");
+  const [defaultPassword, setDefaultPassword] = useState([
+    "black",
+    "Blank",
+    "black",
+    "Blank",
+  ]);
+  const [currentPassword, setCurrentPassword] = useState([]);
+  const [step, setStep] = useState(0);
+  const [correctPassword, setCorrectPassword] = useState(false);
+  const [incorrectPassword, setIncorrectPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const loadModel = async () => {
     const URL = "/model/";
@@ -40,11 +50,42 @@ export default function App() {
     return await tmImage.loadFromFiles(modelFile, weightsFile, metadataFile);
   };
 
+  const resetApp = () => {
+    setSelectedColor("black");
+    setCurrentPassword([]);
+    setStep(0);
+    setCorrectPassword(false);
+    setIncorrectPassword(false);
+    console.log("reset app");
+  };
+
   const unlockPhone = async () => {
     let canvas = document.getElementById("defaultCanvas0");
     let predictions = await model.getPredictions(canvas);
-    console.log(predictions);
-    setPredictions(predictions);
+    let newCurrentPassword = currentPassword;
+    let currentStep = step;
+    const highestProbability = predictions.reduce((highest, current) =>
+      current.probability > highest.probability ? current : highest
+    );
+    if (currentStep < 2 && currentPassword.length < 4) {
+      console.log("adding to password");
+      newCurrentPassword.push(selectedColor, highestProbability.className);
+      setCurrentPassword(newCurrentPassword);
+    }
+    if (currentStep >= 2) {
+      for (let i = 0; i < 4; i++) {
+        if (defaultPassword[i] != currentPassword[i]) {
+          setIncorrectPassword(true);
+          return;
+        }
+      }
+    }
+    currentStep = currentStep + 1;
+    setStep(currentStep);
+    if (newCurrentPassword.length == 4 && currentStep >= 3) {
+      console.log("correct password");
+      setCorrectPassword(true);
+    }
   };
 
   useEffect(() => {
@@ -57,7 +98,6 @@ export default function App() {
       setLoading(false);
     };
     setup();
-    setMounted(true);
   }, []);
 
   return (
@@ -81,7 +121,7 @@ export default function App() {
       >
         {!permissionsRequested ? (
           <button
-            className="w-full font-black uppercase"
+            className="w-full font-black uppercase bg-[#181818] p-2 rounded-md border border-[#383838]"
             onClick={() => {
               if (
                 typeof DeviceOrientationEvent.requestPermission === "function"
@@ -102,7 +142,64 @@ export default function App() {
         unlockPhone={unlockPhone}
         selectedColor={selectedColor}
         setSelectedColor={setSelectedColor}
+        step={step}
       />
+
+      <div
+        className={twMerge(
+          `absolute left-0 top-0 w-screen h-screen bg-black flex justify-center items-center`,
+          `${incorrectPassword ? "opacity-100 z-[10000]" : "opacity-0 z-0"}`
+        )}
+      >
+        <div className="flex flex-col w-full h-full p-4 pt-12 space-y-2">
+          <h1 className="text-lg font-black">Wrong password!</h1>
+          <span>Password entered:</span>
+          <div>
+            <div className="flex flex-row w-full justify-center items-center">
+              {currentPassword.map((el) => (
+                <input
+                  type={showPassword ? "text" : "password"}
+                  disabled
+                  className="
+                    w-full mx-2 bg-[#181818] text-white 
+                    px-1 py-2 rounded-lg capitalize shadow-[#140a14] 
+                    shadow-inner shadow-[#000000]
+                    justify-center items-center text-center
+                  "
+                  value={el}
+                />
+              ))}
+              <button
+                className=""
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+              >
+                {showPassword ? (
+                  <Eye className="w-8 h-8 min-w-8"></Eye>
+                ) : (
+                  <EyeSlash className="w-8 h-8" />
+                )}
+              </button>
+            </div>
+          </div>
+          <button className="bg-[#181818] p-2 rounded-md border border-[#383838]" onClick={() => resetApp()}>Try again?</button>
+        </div>
+      </div>
+
+      <div
+        className={twMerge(
+          `absolute left-0 top-0 w-screen h-screen bg-black flex justify-center items-center`,
+          `${correctPassword ? "opacity-100 z-[10000]" : "opacity-0 z-0"}`
+        )}
+      >
+        <HomeScreen
+          setPassword={(password) => {
+            setDefaultPassword(password);
+          }}
+          resetApp={resetApp}
+        />
+      </div>
     </>
   );
 }

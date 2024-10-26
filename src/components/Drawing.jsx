@@ -4,6 +4,8 @@ import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { clamp } from "./utils.js";
 import {
+  ArrowArcLeft,
+  ArrowRight,
   Compass,
   Lock,
   LockOpen,
@@ -20,10 +22,32 @@ import speed4 from '../assets/speed4.png';
 let speedsrc_i = 0;
 
 
+const DrawingButton = ({
+  className,
+  onClick,
+  children,
+}) => {
+  return (
+    <button
+      className={twMerge("shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full flex justify-center items-center pointer-events-auto p-4 stroke-1", className)}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
+
+// onClick={() => {
+//   drawing = !drawing;
+// }}
+{/* <PaintBrush className="w-full h-full stroke-2 fill-black" /> */}
+
+
 export default function Drawing({
   unlockPhone,
   selectedColor,
-  setSelectedColor
+  setSelectedColor,
+  step,
 }) {
   const [colourPaletteOpened, setColourPaletteOpened] = useState(false);
   const [speedOpened, setSpeedOpened] = useState(false);
@@ -50,9 +74,9 @@ export default function Drawing({
       let boundingRect = divRef.current.getBoundingClientRect();
       p5.createCanvas(boundingRect.width, boundingRect.height);
       pos = {
-        x: boundingRect.width/2,
-        y: boundingRect.height/2,
-      }
+        x: boundingRect.width / 2,
+        y: boundingRect.height / 2,
+      };
     };
 
     p5.draw = () => {
@@ -153,14 +177,6 @@ export default function Drawing({
     };
   };
 
-  const resetApp = () => {
-    drawing = false;
-    shaking = false;
-    done = false;
-    shakeValue = 0;
-    toErase = true;
-  };
-
   const updateRect = () => {
     let rect = divRef.current.getBoundingClientRect();
     if (rect) {
@@ -206,47 +222,52 @@ export default function Drawing({
       {/* Buttons */}
       <div className="absolute right-0 top-0 z-[999] w-full h-full p-2 flex justify-end items-end pointer-events-none">
         <div className="relative">
-          <button
-            className="absolute bottom-4 right-20 bg-gray-100 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-28 h-28 flex justify-center items-center pointer-events-auto"
+          <DrawingButton
+            className="absolute bottom-4 right-20 bg-gray-100 w-28 h-28"
             onClick={() => {
               drawing = !drawing;
             }}
           >
             <PaintBrush className="w-full h-full stroke-2 fill-black" />
-          </button>
-          <button
-            className="absolute bottom-0 right-4 bg-yellow-400 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
+          </DrawingButton>
+          <DrawingButton
+            className="absolute bottom-0 right-4 bg-yellow-400 w-16 h-16"
             onClick={() => {
               let boundingRect = divRef.current.getBoundingClientRect();
               pos = { x: boundingRect.width / 2, y: boundingRect.height / 2 };
             }}
           >
             <Compass className="w-full h-full stroke-2 fill-black" />
-          </button>
-          <button
-            className="absolute bottom-[4.5rem] right-0 bg-green-400 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-20 h-20 flex justify-center items-center pointer-events-auto"
+          </DrawingButton>
+          <DrawingButton
+            className="absolute bottom-[4.5rem] right-0 bg-green-400 w-20 h-20"
             onClick={unlockPhone}
           >
-            <LockOpen className="w-full h-full stroke-2 fill-black" />
-          </button>
-          <button
-            className="absolute bottom-32 right-[4.5rem] bg-purple-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
+            {step < 2 ? (
+              <ArrowRight className="w-full h-full stroke-2 fill-black" />
+            ) : (
+              <LockOpen className="w-full h-full stroke-2 fill-black" />
+            )}
+          </DrawingButton>
+          <DrawingButton
+            className="absolute bottom-32 right-[4.5rem] bg-purple-300 w-16 h-16"
             onClick={() => setColourPaletteOpened(!colourPaletteOpened)}
           >
             <Palette className="w-full h-full stroke-2 fill-black" />
-          </button>
-          <button
-            className="absolute bottom-[9.8rem] right-2 bg-orange-300 shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full w-16 h-16 flex justify-center items-center pointer-events-auto"
+          </DrawingButton>
+
+          <DrawingButton
+            className="absolute bottom-[9.8rem] right-2 bg-orange-300 w-16 h-16"
             onClick={() => {
               setSpeedOpened(!speedOpened);
               zorient = p5.rotationZ;
             }}
           >
             <Speedometer className="w-full h-full stroke-2 fill-black" />
-          </button>
-        </div>
+          </DrawingButton>        </div>
       </div>
 
+      {/* Colour palette */}
       <div
         className={twMerge(
           "absolute right-0 top-0 z-[999] w-full h-full p-4 flex flex-col justify-end items-end space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
@@ -257,48 +278,44 @@ export default function Drawing({
         )}
       >
         <div className="flex flex-col justify-center items-center bg-[#00000080] rounded-full backdrop-blur-md p-2">
-            <span className="font-black font-sans text-lg">Pick colour</span>
-            <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit p-4 z-[1000] pointer-events-auto">
-              <button
-                onClick={() => setSelectedColor("black")}
-                className={`w-8 h-8 border-2 rounded-full p-1 ${
-                  selectedColor === "black"
-                    ? "border-white"
-                    : "border-transparent"
-                }`}
-                style={{ backgroundColor: "black" }}
-              />
+          <span className="font-black font-sans text-lg">Pick colour</span>
+          <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit p-4 z-[1000] pointer-events-auto">
+            <button
+              onClick={() => setSelectedColor("black")}
+              className={`w-8 h-8 border-2 rounded-full p-1 ${
+                selectedColor === "black"
+                  ? "border-white"
+                  : "border-transparent"
+              }`}
+              style={{ backgroundColor: "black" }}
+            />
 
-              <button
-                onClick={() => setSelectedColor("red")}
-                className={`w-8 h-8 border-2 rounded-full p-1 ${
-                  selectedColor === "red"
-                    ? "border-white"
-                    : "border-transparent"
-                }`}
-                style={{ backgroundColor: "red" }}
-              />
+            <button
+              onClick={() => setSelectedColor("red")}
+              className={`w-8 h-8 border-2 rounded-full p-1 ${
+                selectedColor === "red" ? "border-white" : "border-transparent"
+              }`}
+              style={{ backgroundColor: "red" }}
+            />
 
-              <button
-                onClick={() => setSelectedColor("blue")}
-                className={`w-8 h-8 border-2 rounded-full p-1 ${
-                  selectedColor === "blue"
-                    ? "border-white"
-                    : "border-transparent"
-                }`}
-                style={{ backgroundColor: "blue" }}
-              />
+            <button
+              onClick={() => setSelectedColor("blue")}
+              className={`w-8 h-8 border-2 rounded-full p-1 ${
+                selectedColor === "blue" ? "border-white" : "border-transparent"
+              }`}
+              style={{ backgroundColor: "blue" }}
+            />
 
-              <button
-                onClick={() => setSelectedColor("green")}
-                className={`w-8 h-8 border-2 rounded-full p-1 ${
-                  selectedColor === "green"
-                    ? "border-white"
-                    : "border-transparent"
-                }`}
-                style={{ backgroundColor: "green" }}
-              />
-            </div>
+            <button
+              onClick={() => setSelectedColor("green")}
+              className={`w-8 h-8 border-2 rounded-full p-1 ${
+                selectedColor === "green"
+                  ? "border-white"
+                  : "border-transparent"
+              }`}
+              style={{ backgroundColor: "green" }}
+            />
+          </div>
         </div>
       </div>
 
@@ -316,7 +333,8 @@ export default function Drawing({
             <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit p-4 z-[1000] pointer-events-auto">
               <img onClick={() => { 
                 if (speedOpened) {
-                  speedsrc_i = (speedsrc_i + 1) % 4; 
+                  speedsrc_i = (speedsrc_i + 1) % 4;
+                  console.log(speedsrc_i) 
                   document.getElementById('speedgauge').src = speedsrc[speedsrc_i];
                 }
               }} src={speedsrc[speedsrc_i]} className="w-[12rem] h-auto" id="speedgauge"></img>
