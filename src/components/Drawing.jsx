@@ -15,11 +15,11 @@ import {
   Speedometer,
 } from "@phosphor-icons/react";
 import { twMerge } from "tailwind-merge";
-import speed1 from "../assets/speed1.png";
-import speed2 from "../assets/speed2.png";
-import speed3 from "../assets/speed3.png";
-import speed4 from "../assets/speed4.png";
-let speedsrc_i = 0;
+import speed1 from '../assets/speed1.png';
+import speed2 from '../assets/speed2.png';
+import speed3 from '../assets/speed3.png';
+import speed4 from '../assets/speed4.png';
+let speedsrc_i = 1;
 
 const DrawingButton = ({ className, onClick, children }) => {
   return (
