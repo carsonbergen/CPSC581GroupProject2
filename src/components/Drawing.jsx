@@ -13,13 +13,32 @@ import {
   Palette,
   Trash,
   Speedometer,
+  DotOutline,
 } from "@phosphor-icons/react";
 import { twMerge } from "tailwind-merge";
-import speed1 from '../assets/speed1.png';
-import speed2 from '../assets/speed2.png';
-import speed3 from '../assets/speed3.png';
-import speed4 from '../assets/speed4.png';
+import speed1 from "../assets/speed1.png";
+import speed2 from "../assets/speed2.png";
+import speed3 from "../assets/speed3.png";
+import speed4 from "../assets/speed4.png";
 let speedsrc_i = 1;
+
+const Dots = ({ step }) => {
+  const dotsArray = [
+    <DotOutline weight={step >= 1 ? 'fill' : 'regular'} className="w-8 h-8" />,
+    <DotOutline weight={step >= 2 ? 'fill' : 'regular'}  className="w-8 h-8" />,
+  ];
+  return (
+    <div className="flex flex-row">
+      {
+        dotsArray.map((el) => (
+          <>
+          {el}
+          </>
+        ))
+      }
+    </div>
+  );
+};
 
 const DrawingButton = ({ className, onClick, children }) => {
   return (
@@ -50,8 +69,8 @@ export default function Drawing({
 }) {
   const [colourPaletteOpened, setColourPaletteOpened] = useState(false);
   const [speedOpened, setSpeedOpened] = useState(false);
-
   const divRef = useRef(null);
+
   let drawing = false;
   let shaking = false;
   let done = false;
@@ -215,6 +234,9 @@ export default function Drawing({
             <ReactP5Wrapper sketch={cursorSketch} />
           </div>
         </div>
+        <div className="w-full h-fit flex flex-row justify-center items-center">
+          <Dots step={step} />
+        </div>
       </div>
 
       {/* Buttons */}
@@ -325,7 +347,9 @@ export default function Drawing({
         )}
       >
         <div className="flex flex-col justify-center items-center bg-[#00000080] rounded-full backdrop-blur-md">
-          <span className="font-black font-sans text-lg pt-8">Adjust Speed</span>
+          <span className="font-black font-sans text-lg pt-8">
+            Adjust Speed
+          </span>
           <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit px-2 pb-2 z-[1000] pointer-events-auto">
             <img
               onClick={() => {
