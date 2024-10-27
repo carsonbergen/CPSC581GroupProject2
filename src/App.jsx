@@ -149,7 +149,8 @@ export default function App() {
       <div
         className={twMerge(
           `absolute left-0 top-0 w-screen h-screen bg-black flex justify-center items-center`,
-          `${incorrectPassword ? "opacity-100 z-[10000]" : "opacity-0 z-0"}`
+          `${incorrectPassword ? "opacity-100 z-[10000] translate-y-[0vh]" : "opacity-0 z-0 translate-y-[100vh]"}`,
+          `transition-all duration-200`
         )}
       >
         <div className="flex flex-col w-full h-full p-4 pt-12 space-y-2">
@@ -192,7 +193,8 @@ export default function App() {
       <div
         className={twMerge(
           `absolute left-0 top-0 w-screen h-screen bg-black flex justify-center items-center`,
-          `${correctPassword ? "opacity-100 z-[10000]" : "opacity-0 z-0"}`
+          `${correctPassword ? "opacity-100 z-[10000] translate-y-[0vh]" : "opacity-0 z-0 translate-y-[100vh]"}`,
+          `transition-all duration-200`
         )}
       >
         <HomeScreen

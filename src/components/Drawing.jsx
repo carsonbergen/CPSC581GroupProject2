@@ -15,21 +15,19 @@ import {
   Speedometer,
 } from "@phosphor-icons/react";
 import { twMerge } from "tailwind-merge";
-import speed1 from '../assets/speed1.png';
-import speed2 from '../assets/speed2.png';
-import speed3 from '../assets/speed3.png';
-import speed4 from '../assets/speed4.png';
+import speed1 from "../assets/speed1.png";
+import speed2 from "../assets/speed2.png";
+import speed3 from "../assets/speed3.png";
+import speed4 from "../assets/speed4.png";
 let speedsrc_i = 0;
 
-
-const DrawingButton = ({
-  className,
-  onClick,
-  children,
-}) => {
+const DrawingButton = ({ className, onClick, children }) => {
   return (
     <button
-      className={twMerge("shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full flex justify-center items-center pointer-events-auto p-4 stroke-1", className)}
+      className={twMerge(
+        "shadow-[inset_0_-2px_4px_rgba(0.6,0.6,0.6,0.6)] rounded-full flex justify-center items-center pointer-events-auto p-4 stroke-1",
+        className
+      )}
       onClick={onClick}
     >
       {children}
@@ -40,8 +38,9 @@ const DrawingButton = ({
 // onClick={() => {
 //   drawing = !drawing;
 // }}
-{/* <PaintBrush className="w-full h-full stroke-2 fill-black" /> */}
-
+{
+  /* <PaintBrush className="w-full h-full stroke-2 fill-black" /> */
+}
 
 export default function Drawing({
   unlockPhone,
@@ -142,12 +141,12 @@ export default function Drawing({
 
     p5.deviceTurned = () => {
       if (speedOpened) {
-        if (p5.turnAxis === 'Z') {
+        if (p5.turnAxis === "Z") {
           //speedsrc_i = (speedsrc_i + 1) % 4;
-          document.getElementById('speedgauge').src = speedsrc[speedsrc_i];
+          document.getElementById("speedgauge").src = speedsrc[speedsrc_i];
         }
       }
-    }
+    };
 
     p5.draw = () => {
       if (!done) {
@@ -216,7 +215,6 @@ export default function Drawing({
             <ReactP5Wrapper sketch={cursorSketch} />
           </div>
         </div>
-
       </div>
 
       {/* Buttons */}
@@ -255,7 +253,6 @@ export default function Drawing({
           >
             <Palette className="w-full h-full stroke-2 fill-black" />
           </DrawingButton>
-
           <DrawingButton
             className="absolute bottom-[9.8rem] right-2 bg-orange-300 w-16 h-16"
             onClick={() => {
@@ -264,13 +261,14 @@ export default function Drawing({
             }}
           >
             <Speedometer className="w-full h-full stroke-2 fill-black" />
-          </DrawingButton>        </div>
+          </DrawingButton>{" "}
+        </div>
       </div>
 
       {/* Colour palette */}
       <div
         className={twMerge(
-          "absolute right-0 top-0 z-[999] w-full h-full p-4 flex flex-col justify-end items-end space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
+          "absolute right-0 top-0 z-[999] w-full h-full p-4 flex flex-col justify-end items-center space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
           `${
             colourPaletteOpened ? "translate-y-[0vh]" : "translate-y-[100vh]"
           }`,
@@ -321,24 +319,28 @@ export default function Drawing({
 
       <div
         className={twMerge(
-          "absolute z-[999] w-full h-[35%] p-4 flex flex-col justify-center items-center space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
-          `${
-            speedOpened ? "translate-y-[0vh]" : "translate-y-[100vh]"
-          }`,
+          "absolute right-0 top-0 z-[999] w-full h-full p-4 flex flex-col justify-end items-center space-x-2 mb-4 bottom-0 transition-all duration-200 pointer-events-none",
+          `${speedOpened ? "translate-y-[0vh]" : "translate-y-[100vh]"}`,
           ""
         )}
       >
-        <div className="flex flex-col justify-center items-center bg-[#00000080] rounded-full backdrop-blur-md p-4">
-            <span className="font-black font-sans text-lg">Adjust Speed</span>
-            <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit p-4 z-[1000] pointer-events-auto">
-              <img onClick={() => { 
+        <div className="flex flex-col justify-center items-center bg-[#00000080] rounded-full backdrop-blur-md">
+          <span className="font-black font-sans text-lg pt-8">Adjust Speed</span>
+          <div className="flex flex-row justify-center items-center space-x-2 w-fit h-fit px-2 pb-2 z-[1000] pointer-events-auto">
+            <img
+              onClick={() => {
                 if (speedOpened) {
                   speedsrc_i = (speedsrc_i + 1) % 4;
-                  console.log(speedsrc_i) 
-                  document.getElementById('speedgauge').src = speedsrc[speedsrc_i];
+                  console.log(speedsrc_i);
+                  document.getElementById("speedgauge").src =
+                    speedsrc[speedsrc_i];
                 }
-              }} src={speedsrc[speedsrc_i]} className="w-[12rem] h-auto" id="speedgauge"></img>
-            </div>
+              }}
+              src={speedsrc[speedsrc_i]}
+              className="w-[12rem] h-auto scale-75"
+              id="speedgauge"
+            ></img>
+          </div>
         </div>
       </div>
     </>
